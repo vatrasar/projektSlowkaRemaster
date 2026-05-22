@@ -1,0 +1,219 @@
+<rxui:ReactiveUserControl x:TypeArguments="local:ManageViewModel"
+                           x:DataType="local:ManageViewModel"
+                           xmlns="https://github.com/avaloniaui"
+                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                           xmlns:rxui="http://reactiveui.net"
+                           xmlns:local="using:ProjektSlowkaRemasterd.Src.Features.Category.UI.Screens.Manage"
+                           xmlns:models="using:ProjektSlowkaRemasterd.Src.Core.Domain.Models"
+                           x:Class="ProjektSlowkaRemasterd.Src.Features.Category.UI.Screens.Manage.ManageView">
+
+    <UserControl.Styles>
+        <StyleInclude Source="/Src/Features/Category/UI/Screens/Manage/ScreenStyles/ManageViewStyles.axaml" />
+    </UserControl.Styles>
+
+    <UserControl.Resources>
+        <local:QuestionStatusToVisibleConverter x:Key="StatusToVisibleConverter" />
+    </UserControl.Resources>
+
+    <Grid ColumnDefinitions="250, 4, *">
+        <!-- Left Sidebar: Categories List -->
+        <Border Grid.Column="0" Classes="SidebarCard">
+            <Grid RowDefinitions="*,Auto">
+                <ListBox Grid.Row="0" x:Name="CategoriesListBox" Classes="CategoryList">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="models:Category">
+                            <StackPanel Spacing="2">
+                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14" />
+                                <TextBlock Text="{Binding CreatedAt, StringFormat='Created: {0:yyyy-MM-dd}'}" FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <Button Grid.Row="1" x:Name="AddCategoryButton" Content="+ New Category" Classes="Primary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0,10,0,0" />
+            </Grid>
+        </Border>
+
+        <!-- Grid Splitter -->
+        <GridSplitter Grid.Column="1" Width="4" Background="Transparent" ResizeBehavior="PreviousAndNext" />
+
+        <!-- Right Content Pane -->
+        <Grid Grid.Column="2" Margin="15,0,0,0">
+            <!-- No Category Selected Panel -->
+            <TextBlock x:Name="NoCategorySelectedTextBlock" Text="Please select a category from the sidebar to manage it." Classes="PromptText" VerticalAlignment="Center" HorizontalAlignment="Center" />
+
+            <!-- Category Manager Grid -->
+            <Grid x:Name="CategoryContentGrid" RowDefinitions="Auto, *">
+                
+                <!-- Category Details Header -->
+                <Border Grid.Row="0" Classes="HeaderCard" Margin="0,0,0,15">
+                    <Grid RowDefinitions="Auto,Auto">
+                        <!-- Standard View -->
+                        <Grid x:Name="CategoryDetailsPanel" ColumnDefinitions="*, Auto" Grid.Row="0">
+                            <StackPanel Grid.Column="0" Spacing="4">
+                                <TextBlock x:Name="CategoryNameTextBlock" Text="{Binding State.SelectedCategory.Name}" Classes="CategoryTitle" />
+                                <TextBlock x:Name="CategoryModeTextBlock" Text="{Binding State.SelectedCategory.Reverse, ConverterParameter='Reverse', StringFormat='Double-sided Reviews: {0}'}" FontSize="12" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                                <Button x:Name="EditCategoryButton" Content="Edit" Classes="SecondarySmall" />
+                                <Button x:Name="DeleteCategoryButton" Content="Delete" Classes="DangerSmall" />
+                                <Button x:Name="ArchiveAllButton" Content="Archive All" Classes="SecondarySmall" />
+                                <Button x:Name="ExportLaTeXButton" Content="Export LaTeX" Classes="SecondarySmall" />
+                                <Button x:Name="AddQuestionButton" Content="+ Add Question" Classes="SuccessSmall" />
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Edit View -->
+                        <Grid x:Name="CategoryEditPanel" ColumnDefinitions="*, Auto" Grid.Row="1">
+                            <StackPanel Grid.Column="0" Spacing="10" Orientation="Horizontal">
+                                <TextBox x:Name="EditCategoryNameTextBox" Classes="Input" Width="250" Watermark="Category Name" />
+                                <CheckBox x:Name="EditCategoryDoubleSidedCheckBox" Classes="Toggle" Content="Double-sided" VerticalAlignment="Center" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                                <Button x:Name="SaveCategoryEditButton" Content="Save" Classes="SuccessSmall" />
+                                <Button x:Name="CancelCategoryEditButton" Content="Cancel" Classes="SecondarySmall" />
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </Border>
+
+                <!-- Tabs Section -->
+                <TabControl Grid.Row="1">
+                    <!-- Tab 1: Questions List -->
+                    <TabItem Header="Questions">
+                        <Grid RowDefinitions="Auto, *">
+                            <!-- Filters Bar -->
+                            <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto" Margin="0,5,0,10">
+                                <CheckBox Grid.Column="0" x:Name="ShowArchivedCheckBox" Content="Show Archived Only" VerticalAlignment="Center" />
+                                <TextBlock Grid.Column="2" x:Name="QuestionsCountTextBlock" Text="{Binding State.Questions.Count, StringFormat='Count: {0}'}" VerticalAlignment="Center" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+                            </Grid>
+
+                            <!-- List of Questions -->
+                            <ListBox Grid.Row="1" x:Name="QuestionsListBox" Classes="QuestionList">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate x:DataType="models:Question">
+                                        <Border Classes="QuestionCard">
+                                            <Grid ColumnDefinitions="*, Auto">
+                                                <StackPanel Grid.Column="0" Spacing="5" VerticalAlignment="Center">
+                                                    <!-- Tags Row -->
+                                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                                        <Border Classes="StatusBadge" IsVisible="{Binding IsProblematic}">
+                                                            <TextBlock Text="Problematic" Classes="BadgeTextDanger" />
+                                                        </Border>
+                                                        <Border Classes="StatusBadge" IsVisible="{Binding IsNotion}">
+                                                            <TextBlock Text="Note" Classes="BadgeTextInfo" />
+                                                        </Border>
+                                                        <TextBlock Text="{Binding Status, StringFormat='[{0}]'}" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource SystemControlHighlightAccentBrush}" VerticalAlignment="Center" />
+                                                        <TextBlock Text="{Binding GroupId, StringFormat='Group: {0}'}" IsVisible="{Binding GroupId, Converter={x:Static ObjectConverters.IsNotNull}}" FontSize="11" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" VerticalAlignment="Center" />
+                                                    </StackPanel>
+
+                                                    <!-- Question Content -->
+                                                    <TextBlock Text="{Binding QuestionText}" IsVisible="{Binding !IsNotion}" FontWeight="SemiBold" TextWrapping="Wrap" MaxLines="2" />
+                                                    
+                                                    <!-- Answer Content -->
+                                                    <TextBlock Text="{Binding AnswerText}" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" TextWrapping="Wrap" MaxLines="2" />
+                                                </StackPanel>
+
+                                                <!-- Operations buttons -->
+                                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                                                    <Button Content="Edit" Click="OnEditQuestionClick" Classes="SecondarySmall" />
+                                                    <Button Content="Delete" Click="OnDeleteQuestionClick" Classes="DangerSmall" />
+                                                    <Button Content="Restore" Click="OnRestoreQuestionClick" Classes="SuccessSmall" IsVisible="{Binding Status, Converter={StaticResource StatusToVisibleConverter}, ConverterParameter=Archived}" />
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
+                    </TabItem>
+
+                    <!-- Tab 2: Topics & Sections -->
+                    <TabItem Header="Topics &amp; Sections">
+                        <Grid ColumnDefinitions="*, 4, *" Margin="0,10,0,0">
+                            <!-- Left: Topics List -->
+                            <Grid Grid.Column="0" RowDefinitions="*, Auto, Auto" Margin="0,0,10,0">
+                                <ListBox Grid.Row="0" x:Name="TopicsListBox" Classes="TopicList">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate x:DataType="models:Topic">
+                                            <Grid ColumnDefinitions="*, Auto">
+                                                <TextBlock Grid.Column="0" Text="{Binding Name}" FontWeight="Medium" VerticalAlignment="Center" />
+                                                <Button Grid.Column="1" Content="Rename" Click="OnStartEditTopicClick" Classes="SecondarySmall" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+
+                                <!-- Edit Topic Panel -->
+                                <Border Grid.Row="1" x:Name="TopicEditPanel" Classes="EditPanel" Margin="0,10,0,0">
+                                    <StackPanel Spacing="8">
+                                        <TextBlock Text="Rename Selected Topic" Classes="Label" />
+                                        <Grid ColumnDefinitions="*, Auto, Auto">
+                                            <TextBox Grid.Column="0" x:Name="EditTopicNameTextBox" Classes="Input" Margin="0,0,8,0" />
+                                            <Button Grid.Column="1" x:Name="SaveTopicEditButton" Content="Save" Classes="SuccessSmall" Margin="0,0,8,0" />
+                                            <Button Grid.Column="2" x:Name="CancelTopicEditButton" Content="Cancel" Classes="SecondarySmall" />
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Add Topic Panel -->
+                                <StackPanel Grid.Row="2" Spacing="5" Margin="0,10,0,0">
+                                    <TextBlock Text="Create New Topic" Classes="Label" />
+                                    <Grid ColumnDefinitions="*, Auto">
+                                        <TextBox Grid.Column="0" x:Name="NewTopicNameTextBox" Classes="Input" Watermark="Topic Name" Margin="0,0,10,0" />
+                                        <Button Grid.Column="1" x:Name="AddTopicButton" Content="Add Topic" Classes="PrimarySmall" />
+                                    </Grid>
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- Splitter -->
+                            <GridSplitter Grid.Column="1" Width="4" Background="Transparent" />
+
+                            <!-- Right: Sections List -->
+                            <Grid Grid.Column="2" x:Name="SectionsPanel" RowDefinitions="*, Auto, Auto" Margin="10,0,0,0">
+                                <ListBox Grid.Row="0" x:Name="SectionsListBox" Classes="SectionList">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate x:DataType="models:Section">
+                                            <Grid ColumnDefinitions="*, Auto, Auto">
+                                                <TextBlock Grid.Column="0" Text="{Binding Name}" FontWeight="Medium" VerticalAlignment="Center" />
+                                                <Button Grid.Column="1" Content="Rename" Click="OnStartEditSectionClick" Classes="SecondarySmall" Margin="0,0,5,0" />
+                                                <Button Grid.Column="2" Content="Delete" Click="OnDeleteSectionClick" Classes="DangerSmall" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+
+                                <!-- Edit Section Panel -->
+                                <Border Grid.Row="1" x:Name="SectionEditPanel" Classes="EditPanel" Margin="0,10,0,0">
+                                    <StackPanel Spacing="8">
+                                        <TextBlock Text="Rename Selected Section" Classes="Label" />
+                                        <Grid ColumnDefinitions="*, Auto, Auto">
+                                            <TextBox Grid.Column="0" x:Name="EditSectionNameTextBox" Classes="Input" Margin="0,0,8,0" />
+                                            <Button Grid.Column="1" x:Name="SaveSectionEditButton" Content="Save" Classes="SuccessSmall" Margin="0,0,8,0" />
+                                            <Button Grid.Column="2" x:Name="CancelSectionEditButton" Content="Cancel" Classes="SecondarySmall" />
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Add Section Panel -->
+                                <StackPanel Grid.Row="2" Spacing="5" Margin="0,10,0,0">
+                                    <TextBlock Text="Create New Section" Classes="Label" />
+                                    <Grid ColumnDefinitions="*, Auto">
+                                        <TextBox Grid.Column="0" x:Name="NewSectionNameTextBox" Classes="Input" Watermark="Section Name" Margin="0,0,10,0" />
+                                        <Button Grid.Column="1" x:Name="AddSectionButton" Content="Add Section" Classes="PrimarySmall" />
+                                    </Grid>
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+            </Grid>
+
+            <!-- Bottom Messages -->
+            <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="10">
+                <TextBlock x:Name="SuccessTextBlock" Classes="Success" />
+                <TextBlock x:Name="ErrorTextBlock" Classes="Error" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</rxui:ReactiveUserControl>

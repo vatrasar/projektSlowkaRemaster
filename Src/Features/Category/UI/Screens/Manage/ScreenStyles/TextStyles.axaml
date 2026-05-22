@@ -1,0 +1,67 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Prompt Text -->
+    <Style Selector="TextBlock.PromptText">
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="FontStyle" Value="Italic" />
+        <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+    </Style>
+
+    <!-- Category Header Title -->
+    <Style Selector="TextBlock.CategoryTitle">
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
+    </Style>
+
+    <!-- Generic Labels -->
+    <Style Selector="TextBlock.Label">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+    </Style>
+
+    <!-- Status Badges for Questions -->
+    <Style Selector="Border.StatusBadge">
+        <Setter Property="CornerRadius" Value="3" />
+        <Setter Property="Padding" Value="6,2" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+    
+    <Style Selector="Border.StatusBadge:nth-child(1)">
+        <Setter Property="Background" Value="#1AEC1C24" /> <!-- Transparent Red -->
+        <Setter Property="BorderBrush" Value="#ffc62828" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
+    <Style Selector="Border.StatusBadge:nth-child(2)">
+        <Setter Property="Background" Value="#1A0288D1" /> <!-- Transparent Blue -->
+        <Setter Property="BorderBrush" Value="#ff0288d1" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
+    <Style Selector="TextBlock.BadgeTextDanger">
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="#ffc62828" />
+    </Style>
+
+    <Style Selector="TextBlock.BadgeTextInfo">
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="#ff0288d1" />
+    </Style>
+
+    <!-- Success & Error messages -->
+    <Style Selector="TextBlock.Success">
+        <Setter Property="Foreground" Value="{DynamicResource SuccessBrush}" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="Medium" />
+    </Style>
+
+    <Style Selector="TextBlock.Error">
+        <Setter Property="Foreground" Value="{DynamicResource ErrorBrush}" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="Medium" />
+    </Style>
+</Styles>

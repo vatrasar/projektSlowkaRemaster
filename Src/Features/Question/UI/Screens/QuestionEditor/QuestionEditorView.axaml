@@ -1,0 +1,200 @@
+<rxui:ReactiveUserControl x:TypeArguments="local:QuestionEditorViewModel"
+                           x:DataType="local:QuestionEditorViewModel"
+                           xmlns="https://github.com/avaloniaui"
+                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                           xmlns:rxui="http://reactiveui.net"
+                           xmlns:local="using:ProjektSlowkaRemasterd.Src.Features.Question.UI.Screens.QuestionEditor"
+                           xmlns:models="using:ProjektSlowkaRemasterd.Src.Core.Domain.Models"
+                           x:Class="ProjektSlowkaRemasterd.Src.Features.Question.UI.Screens.QuestionEditor.QuestionEditorView">
+
+    <UserControl.Styles>
+        <StyleInclude Source="/Src/Features/Question/UI/Screens/QuestionEditor/ScreenStyles/QuestionEditorStyles.axaml" />
+    </UserControl.Styles>
+
+    <UserControl.Resources>
+        <local:ImagePathToBitmapConverter x:Key="PathToBitmapConverter"/>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Title & Back Button -->
+            <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Margin="0,0,0,20">
+                <Button Grid.Column="0" x:Name="BackButton" Content="← Back" Classes="Secondary" VerticalAlignment="Center" Margin="0,0,15,0" />
+                <TextBlock Grid.Column="1" x:Name="TitleTextBlock" Classes="Title" VerticalAlignment="Center"/>
+            </Grid>
+
+            <!-- Main Split Layout -->
+            <Grid Grid.Row="1" ColumnDefinitions="2*,1*">
+                
+                <!-- Left Column: Form -->
+                <Border Grid.Column="0" Classes="Card" Margin="0,0,20,0">
+                    <StackPanel Spacing="15">
+                        
+                        <!-- Dropdowns in a Row -->
+                        <Grid ColumnDefinitions="*,*,*">
+                            <!-- Category -->
+                            <StackPanel Grid.Column="0" Spacing="4" Margin="0,0,10,0">
+                                <TextBlock Text="Category" Classes="Label" />
+                                <ComboBox x:Name="CategoryComboBox" HorizontalAlignment="Stretch">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate x:DataType="models:Category">
+                                            <TextBlock Text="{Binding Name}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
+
+                            <!-- Topic -->
+                            <StackPanel Grid.Column="1" Spacing="4" Margin="0,0,10,0">
+                                <TextBlock Text="Topic (Optional)" Classes="Label" />
+                                <ComboBox x:Name="TopicComboBox" HorizontalAlignment="Stretch">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate x:DataType="models:Topic">
+                                            <TextBlock Text="{Binding Name}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
+
+                            <!-- Section -->
+                            <StackPanel Grid.Column="2" Spacing="4">
+                                <TextBlock Text="Section (Optional)" Classes="Label" />
+                                <ComboBox x:Name="SectionComboBox" HorizontalAlignment="Stretch">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate x:DataType="models:Section">
+                                            <TextBlock Text="{Binding Name}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Custom Section Name -->
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Or create new Section name" Classes="Label" />
+                            <TextBox x:Name="CustomSectionTextBox" Classes="Input" Watermark="Type new section name... (requires Topic selected)" />
+                        </StackPanel>
+
+                        <!-- Checkboxes Row -->
+                        <Grid ColumnDefinitions="Auto,Auto,*">
+                            <CheckBox Grid.Column="0" x:Name="IsNoteCheckBox" Classes="Toggle" Content="Is Note" Margin="0,0,20,0" />
+                            <CheckBox Grid.Column="1" x:Name="IsProblematicCheckBox" Classes="Toggle" Content="Mark as Problematic" />
+                        </Grid>
+
+                        <!-- Group ID -->
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Group Connection ID (Optional)" Classes="Label" />
+                            <TextBox x:Name="GroupIdTextBox" Classes="Input" Watermark="Numeric group ID (e.g. 5) to link related questions" />
+                        </StackPanel>
+
+                        <!-- Question Input -->
+                        <StackPanel x:Name="QuestionInputPanel" Spacing="4">
+                            <TextBlock Text="Question" Classes="Label" />
+                            <TextBox x:Name="QuestionTextBox" Classes="Input" Height="100" AcceptsReturn="True" TextWrapping="Wrap" Watermark="Enter question..." />
+                            
+                            <!-- Question Images Attachment -->
+                            <StackPanel x:Name="QuestionImagesPanel" Spacing="8" Margin="0,5,0,0">
+                                <TextBlock Text="Question Attachments" Classes="SubLabel" />
+                                <Grid ColumnDefinitions="*,*">
+                                    <Button Grid.Column="0" x:Name="ChooseQuestionImageButton" Content="Choose Image File" Classes="SecondarySmall" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0,0,10,0"/>
+                                    <Button Grid.Column="1" x:Name="PasteQuestionImageButton" Content="Paste Clipboard" Classes="SecondarySmall" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                                </Grid>
+                                <ItemsControl x:Name="QuestionImagesItemsControl" Margin="0,5,0,0">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Orientation="Horizontal" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="x:String">
+                                            <Border Classes="ImageThumbContainer">
+                                                <Grid ColumnDefinitions="*,Auto">
+                                                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="5">
+                                                        <Image Source="{Binding Converter={StaticResource PathToBitmapConverter}}" Height="40" Width="40" Stretch="UniformToFill"/>
+                                                        <TextBlock Text="{Binding}" Classes="ImageNameText" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                                                    </StackPanel>
+                                                    <Button Grid.Column="1" Content="✕" Click="OnRemoveQuestionImageClick" Classes="RemoveImageButton" VerticalAlignment="Center"/>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- Answer Input -->
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Answer / Content" Classes="Label" />
+                            <TextBox x:Name="AnswerTextBox" Classes="Input" Height="140" AcceptsReturn="True" TextWrapping="Wrap" Watermark="Enter answer or note content..." />
+                            
+                            <!-- Answer Images Attachment -->
+                            <StackPanel Spacing="8" Margin="0,5,0,0">
+                                <TextBlock Text="Answer Attachments" Classes="SubLabel" />
+                                <Grid ColumnDefinitions="*,*">
+                                    <Button Grid.Column="0" x:Name="ChooseAnswerImageButton" Content="Choose Image File" Classes="SecondarySmall" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0,0,10,0"/>
+                                    <Button Grid.Column="1" x:Name="PasteAnswerImageButton" Content="Paste Clipboard" Classes="SecondarySmall" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                                </Grid>
+                                <ItemsControl x:Name="AnswerImagesItemsControl" Margin="0,5,0,0">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Orientation="Horizontal" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="x:String">
+                                            <Border Classes="ImageThumbContainer">
+                                                <Grid ColumnDefinitions="*,Auto">
+                                                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="5">
+                                                        <Image Source="{Binding Converter={StaticResource PathToBitmapConverter}}" Height="40" Width="40" Stretch="UniformToFill"/>
+                                                        <TextBlock Text="{Binding}" Classes="ImageNameText" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                                                    </StackPanel>
+                                                    <Button Grid.Column="1" Content="✕" Click="OnRemoveAnswerImageClick" Classes="RemoveImageButton" VerticalAlignment="Center"/>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- Success / Error Text -->
+                        <TextBlock x:Name="SuccessTextBlock" Classes="Success" />
+                        <TextBlock x:Name="ErrorTextBlock" Classes="Error" />
+
+                        <!-- Save Button -->
+                        <Button x:Name="SaveButton" Content="Save Question" Classes="Primary" HorizontalAlignment="Right" HorizontalContentAlignment="Center" Width="200" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Right Column: Last Added Preview -->
+                <Border Grid.Column="1" x:Name="LastAddedPreviewBorder" Classes="CardPreview" VerticalAlignment="Top">
+                    <StackPanel Spacing="15">
+                        <TextBlock Text="Last Added Question Preview" Classes="SubTitle" />
+                        
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Question (Preview):" Classes="Label" />
+                            <Border Classes="PreviewTextContainer">
+                                <TextBlock x:Name="LastAddedQuestionTextBlock" TextWrapping="Wrap" />
+                            </Border>
+                        </StackPanel>
+
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Answer (Preview):" Classes="Label" />
+                            <Border Classes="PreviewTextContainer">
+                                <TextBlock x:Name="LastAddedAnswerTextBlock" TextWrapping="Wrap" />
+                            </Border>
+                        </StackPanel>
+
+                        <Button x:Name="EditLastAddedButton" Content="Edit Last Added" Classes="Secondary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
+                    </StackPanel>
+                </Border>
+
+            </Grid>
+        </Grid>
+    </ScrollViewer>
+</rxui:ReactiveUserControl>

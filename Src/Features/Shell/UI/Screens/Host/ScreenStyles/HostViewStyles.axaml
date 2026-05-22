@@ -1,0 +1,51 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <Style Selector="Border.Sidebar">
+    <Setter Property="Background" Value="#ff151515" />
+    <Setter Property="BorderBrush" Value="#ff2c2c2c" />
+    <Setter Property="BorderThickness" Value="0,0,1,0" />
+    <Setter Property="Width" Value="240" />
+  </Style>
+
+  <Style Selector="Button.NavButton">
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="Height" Value="45" />
+    <Setter Property="Margin" Value="10,4,10,4" />
+    <Setter Property="Padding" Value="15,0" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="CornerRadius" Value="6" />
+    <Setter Property="Transitions">
+      <Transitions>
+        <BrushTransition Property="Background" Duration="0:0:0.15" />
+      </Transitions>
+    </Setter>
+  </Style>
+
+  <Style Selector="Button.NavButton:pointerover /template/ ContentPresenter">
+    <Setter Property="Background" Value="#ff2c2c2c" />
+  </Style>
+
+  <Style Selector="Button.NavButton:pressed /template/ ContentPresenter">
+    <Setter Property="Background" Value="#ff333333" />
+  </Style>
+
+  <Style Selector="Button.NavButton.Selected">
+    <Setter Property="Background" Value="#ff0073cf" />
+    <Setter Property="Foreground" Value="White" />
+  </Style>
+
+  <Style Selector="Button.NavButton.Selected /template/ ContentPresenter">
+    <Setter Property="Background" Value="#ff0073cf" />
+    <Setter Property="Foreground" Value="White" />
+  </Style>
+
+  <Style Selector="TextBlock.LogoText">
+    <Setter Property="FontSize" Value="18" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="Foreground" Value="#ff0073cf" />
+    <Setter Property="Margin" Value="20,20,20,30" />
+    <Setter Property="HorizontalAlignment" Value="Center" />
+  </Style>
+</Styles>

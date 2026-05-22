@@ -1,0 +1,82 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style Selector="TextBlock.Title">
+        <Setter Property="FontSize" Value="24" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="White" />
+    </Style>
+
+    <Style Selector="TextBlock.Subtitle">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="#ffaaaaaa" />
+    </Style>
+
+    <Style Selector="Border.Card">
+        <Setter Property="Background" Value="#ff1e1e1e" />
+        <Setter Property="BorderBrush" Value="#ff333333" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="Padding" Value="24" />
+        <Setter Property="BoxShadow" Value="0 4 20 0 #40000000" />
+    </Style>
+
+    <Style Selector="Border.Badge">
+        <Setter Property="Background" Value="#ff0073cf" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="Padding" Value="8,4" />
+    </Style>
+
+    <Style Selector="TextBlock.BadgeText">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="White" />
+    </Style>
+
+    <Style Selector="Button.ActionBtn">
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Padding" Value="24,12" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1" />
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.ActionBtn:pointerover">
+        <Setter Property="RenderTransform" Value="scale(1.02)" />
+    </Style>
+
+    <Style Selector="Button.ShowAnswer">
+        <Setter Property="Background" Value="#ff0073cf" />
+        <Setter Property="Foreground" Value="White" />
+    </Style>
+    <Style Selector="Button.ShowAnswer:pointerover">
+        <Setter Property="Background" Value="#ff0084f0" />
+    </Style>
+
+    <Style Selector="Button.Know">
+        <Setter Property="Background" Value="#ff107c41" />
+        <Setter Property="Foreground" Value="White" />
+    </Style>
+    <Style Selector="Button.Know:pointerover">
+        <Setter Property="Background" Value="#ff1b9e59" />
+    </Style>
+
+    <Style Selector="Button.Unknown">
+        <Setter Property="Background" Value="#ffa80000" />
+        <Setter Property="Foreground" Value="White" />
+    </Style>
+    <Style Selector="Button.Unknown:pointerover">
+        <Setter Property="Background" Value="#ffd01b1b" />
+    </Style>
+
+    <Style Selector="ProgressBar.SessionProgress">
+        <Setter Property="Height" Value="6" />
+        <Setter Property="Foreground" Value="#ff0073cf" />
+        <Setter Property="Background" Value="#ff333333" />
+        <Setter Property="CornerRadius" Value="3" />
+    </Style>
+</Styles>

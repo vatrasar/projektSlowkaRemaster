@@ -1,0 +1,38 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style Selector="TextBlock.Title">
+        <Setter Property="FontSize" Value="24" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Margin" Value="0,0,0,8" />
+    </Style>
+
+    <Style Selector="Button.StartAllBtn">
+        <Setter Property="Background" Value="#ff0073cf" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Padding" Value="16,10" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1" />
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.StartAllBtn:pointerover">
+        <Setter Property="Background" Value="#ff0084f0" />
+        <Setter Property="RenderTransform" Value="scale(1.02)" />
+    </Style>
+
+    <Style Selector="Button.StartReviewBtn">
+        <Setter Property="Background" Value="#ff2d2d2d" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Padding" Value="12,6" />
+        <Setter Property="CornerRadius" Value="4" />
+    </Style>
+
+    <Style Selector="Button.StartReviewBtn:pointerover">
+        <Setter Property="Background" Value="#ff0073cf" />
+    </Style>
+</Styles>

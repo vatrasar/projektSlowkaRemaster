@@ -1,0 +1,117 @@
+<rxui:ReactiveUserControl x:TypeArguments="local:SearchViewModel"
+                          x:DataType="local:SearchViewModel"
+                          xmlns="https://github.com/avaloniaui"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:rxui="http://reactiveui.net"
+                          xmlns:local="using:ProjektSlowkaRemasterd.Src.Features.Search.UI.Screens.Search"
+                          xmlns:res="using:ProjektSlowkaRemasterd.Src.Features.Search.Resources"
+                          xmlns:models="using:ProjektSlowkaRemasterd.Src.Core.Domain.Models"
+                          x:Class="ProjektSlowkaRemasterd.Src.Features.Search.UI.Screens.Search.SearchView">
+
+    <UserControl.Styles>
+        <StyleInclude Source="/Src/Features/Search/UI/Screens/Search/ScreenStyles/SearchViewStyles.axaml" />
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="Auto,Auto,*" Margin="30" Classes="SearchLayout">
+        <!-- Title and Search Text Input -->
+        <StackPanel Grid.Row="0" Spacing="15" Margin="0,0,0,20">
+            <TextBlock x:Name="TitleTextBlock" Text="{x:Static res:SearchStrings.SearchTitle}" Classes="Title" />
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBox Grid.Column="0" x:Name="SearchTextBox" Watermark="{x:Static res:SearchStrings.SearchPlaceholder}" Classes="SearchInput" />
+            </Grid>
+        </StackPanel>
+
+        <!-- Filters Section -->
+        <Border Grid.Row="1" Classes="FiltersBorder">
+            <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                <!-- Category Filter -->
+                <StackPanel Classes="FilterItem">
+                    <TextBlock Text="{x:Static res:SearchStrings.CategoryLabel}" Classes="FilterLabel" />
+                    <ComboBox x:Name="CategoryComboBox" Classes="FilterCombo">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate DataType="models:Category">
+                                <TextBlock Text="{Binding Name}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+
+                <!-- Topic Filter -->
+                <StackPanel Classes="FilterItem">
+                    <TextBlock Text="{x:Static res:SearchStrings.TopicLabel}" Classes="FilterLabel" />
+                    <ComboBox x:Name="TopicComboBox" Classes="FilterCombo">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate DataType="models:Topic">
+                                <TextBlock Text="{Binding Name}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+
+                <!-- Section Filter -->
+                <StackPanel Classes="FilterItem">
+                    <TextBlock Text="{x:Static res:SearchStrings.SectionLabel}" Classes="FilterLabel" />
+                    <ComboBox x:Name="SectionComboBox" Classes="FilterCombo">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate DataType="models:Section">
+                                <TextBlock Text="{Binding Name}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+
+                <!-- Status Filter -->
+                <StackPanel Classes="FilterItem">
+                    <TextBlock Text="{x:Static res:SearchStrings.StatusLabel}" Classes="FilterLabel" />
+                    <ComboBox x:Name="StatusComboBox" Classes="FilterCombo" />
+                </StackPanel>
+            </WrapPanel>
+        </Border>
+
+        <!-- Results List -->
+        <Grid Grid.Row="2" RowDefinitions="Auto,*">
+            <ProgressBar Grid.Row="0" x:Name="SearchProgressBar" IsIndeterminate="True" Classes="SearchProgress" Height="4" />
+            
+            <TextBlock Grid.Row="1" x:Name="NoResultsTextBlock" Text="{x:Static res:SearchStrings.NoResultsText}" Classes="NoResultsText" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,50,0,0" />
+
+            <ListBox Grid.Row="1" x:Name="ResultsListBox" Classes="ResultsList" Background="Transparent" BorderThickness="0" Margin="0,10,0,0">
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="local:SearchResultItem">
+                        <Border Classes="ResultItemCard">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel Grid.Column="0" Spacing="8">
+                                    <!-- Question Text -->
+                                    <TextBlock Text="{Binding Question.QuestionText}" Classes="ResultQuestionText" TextWrapping="Wrap" MaxLines="2" />
+                                    <!-- Answer Text Preview -->
+                                    <TextBlock Text="{Binding Question.AnswerText}" Classes="ResultAnswerText" TextWrapping="Wrap" MaxLines="2" />
+                                    
+                                    <!-- Metadata Badges -->
+                                    <WrapPanel Orientation="Horizontal" Classes="BadgesPanel">
+                                        <Border Classes="Badge CategoryBadge">
+                                            <TextBlock Text="{Binding CategoryName}" />
+                                        </Border>
+                                        <Border Classes="Badge TopicBadge">
+                                            <TextBlock Text="{Binding TopicName}" />
+                                        </Border>
+                                        <Border Classes="Badge SectionBadge">
+                                            <TextBlock Text="{Binding SectionName}" />
+                                        </Border>
+                                        <Border Classes="Badge StatusBadge">
+                                            <TextBlock Text="{Binding StatusText}" />
+                                        </Border>
+                                    </WrapPanel>
+                                </StackPanel>
+
+                                <!-- Action Buttons -->
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" Margin="10,0,0,0">
+                                    <Button x:Name="EditButton" Content="{x:Static res:SearchStrings.EditButton}" Click="OnEditQuestionClick" Classes="ActionEditBtn" />
+                                    <Button x:Name="DeleteButton" Content="{x:Static res:SearchStrings.DeleteButton}" Click="OnDeleteQuestionClick" Classes="ActionDeleteBtn" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+    </Grid>
+</rxui:ReactiveUserControl>

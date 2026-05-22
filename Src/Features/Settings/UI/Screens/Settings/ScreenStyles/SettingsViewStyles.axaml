@@ -1,0 +1,57 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style Selector="TextBlock.SettingsTitle">
+        <Setter Property="FontSize" Value="24" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Margin" Value="0,0,0,20" />
+    </Style>
+
+    <Style Selector="Border.SettingsCard">
+        <Setter Property="Background" Value="#ff1a1a1a" />
+        <Setter Property="BorderBrush" Value="#ff333333" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="20" />
+        <Setter Property="Margin" Value="0,0,0,20" />
+    </Style>
+
+    <Style Selector="TextBlock.CardHeader">
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="Foreground" Value="#ff0073cf" />
+        <Setter Property="Margin" Value="0,0,0,15" />
+    </Style>
+
+    <Style Selector="TextBox.PathInput">
+        <Setter Property="Background" Value="#ff262626" />
+        <Setter Property="BorderBrush" Value="#ff444444" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Padding" Value="10" />
+        <Setter Property="CornerRadius" Value="4" />
+    </Style>
+
+    <Style Selector="Button.ActionBtn">
+        <Setter Property="Background" Value="#ff0073cf" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Padding" Value="12,8" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.1" />
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.ActionBtn:pointerover">
+        <Setter Property="Background" Value="#ff0084f0" />
+    </Style>
+
+    <Style Selector="Button.ActionBtn:disabled">
+        <Setter Property="Background" Value="#ff333333" />
+        <Setter Property="Foreground" Value="#ff666666" />
+    </Style>
+</Styles>

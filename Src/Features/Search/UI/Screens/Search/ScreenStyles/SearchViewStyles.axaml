@@ -1,0 +1,7 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StyleInclude Source="/Src/Features/Search/UI/Screens/Search/ScreenStyles/ContainersStyles.axaml" />
+    <StyleInclude Source="/Src/Features/Search/UI/Screens/Search/ScreenStyles/ButtonsStyles.axaml" />
+    <StyleInclude Source="/Src/Features/Search/UI/Screens/Search/ScreenStyles/InputsStyles.axaml" />
+    <StyleInclude Source="/Src/Features/Search/UI/Screens/Search/ScreenStyles/TextStyles.axaml" />
+</Styles>

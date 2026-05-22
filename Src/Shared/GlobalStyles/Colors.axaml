@@ -1,0 +1,16 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Success Colors -->
+    <Color x:Key="SuccessColor">#ff2e7d32</Color>
+    <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource SuccessColor}"/>
+    
+    <Color x:Key="OnSuccessColor">#ffffffff</Color>
+    <SolidColorBrush x:Key="OnSuccessBrush" Color="{StaticResource OnSuccessColor}"/>
+
+    <!-- Error Colors -->
+    <Color x:Key="ErrorColor">#ffc62828</Color>
+    <SolidColorBrush x:Key="ErrorBrush" Color="{StaticResource ErrorColor}"/>
+    
+    <Color x:Key="OnErrorColor">#ffffffff</Color>
+    <SolidColorBrush x:Key="OnErrorBrush" Color="{StaticResource OnErrorColor}"/>
+</ResourceDictionary>

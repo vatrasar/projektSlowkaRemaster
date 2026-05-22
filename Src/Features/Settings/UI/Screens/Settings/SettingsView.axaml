@@ -1,0 +1,48 @@
+<rxui:ReactiveUserControl x:TypeArguments="local:SettingsViewModel"
+                          x:DataType="local:SettingsViewModel"
+                          xmlns="https://github.com/avaloniaui"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:rxui="http://reactiveui.net"
+                          xmlns:local="using:ProjektSlowkaRemasterd.Src.Features.Settings.UI.Screens.Settings"
+                          x:Class="ProjektSlowkaRemasterd.Src.Features.Settings.UI.Screens.Settings.SettingsView">
+
+    <UserControl.Styles>
+        <StyleInclude Source="/Src/Features/Settings/UI/Screens/Settings/ScreenStyles/SettingsViewStyles.axaml" />
+    </UserControl.Styles>
+
+    <ScrollViewer Margin="30">
+        <StackPanel Spacing="20">
+            <TextBlock Text="Settings &amp; Configuration" Classes="SettingsTitle" />
+
+            <!-- Path Config Card -->
+            <Border Classes="SettingsCard">
+                <StackPanel Spacing="15">
+                    <TextBlock Text="Backup Location" Classes="CardHeader" />
+                    
+                    <TextBlock Text="Specify the external path (e.g. OneDrive, Dropbox folder) to save database and media backups:" 
+                               Foreground="#ffaaaaaa" TextWrapping="Wrap" />
+
+                    <Grid ColumnDefinitions="*,Auto" Margin="0,10,0,0">
+                        <TextBox x:Name="BackupPathTextBox" Classes="PathInput" Grid.Column="0" 
+                                 Watermark="e.g. /home/user/OneDrive/BackupFolder" Margin="0,0,10,0" />
+                        <Button x:Name="SavePathButton" Content="Save Path" Classes="ActionBtn" Grid.Column="1" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Manual Backup Card -->
+            <Border Classes="SettingsCard">
+                <StackPanel Spacing="15">
+                    <TextBlock Text="Manual Backup Execution" Classes="CardHeader" />
+                    <TextBlock Text="Trigger a manual synchronization of the database and media folder to the configured backup location."
+                               Foreground="#ffaaaaaa" TextWrapping="Wrap" />
+                    
+                    <Button x:Name="BackupNowButton" Content="Run Backup Now" Classes="ActionBtn" Width="200" HorizontalAlignment="Left" />
+                </StackPanel>
+            </Border>
+
+            <!-- Status Indicator -->
+            <TextBlock x:Name="StatusTextBlock" Foreground="#ff0073cf" FontSize="14" FontWeight="Medium" />
+        </StackPanel>
+    </ScrollViewer>
+</rxui:ReactiveUserControl>

@@ -1,0 +1,79 @@
+<rxui:ReactiveUserControl x:TypeArguments="local:ReviewSessionViewModel"
+                          x:DataType="local:ReviewSessionViewModel"
+                          xmlns="https://github.com/avaloniaui"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:rxui="http://reactiveui.net"
+                          xmlns:local="using:ProjektSlowkaRemasterd.Src.Features.Review.UI.Screens.ReviewSession"
+                          x:Class="ProjektSlowkaRemasterd.Src.Features.Review.UI.Screens.ReviewSession.ReviewSessionView">
+
+    <UserControl.Styles>
+        <StyleInclude Source="/Src/Features/Review/UI/Screens/ReviewSession/ScreenStyles/ReviewSessionViewStyles.axaml" />
+    </UserControl.Styles>
+
+    <Grid Margin="24" RowDefinitions="Auto,*,Auto">
+        <!-- Header Section -->
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,16">
+            <StackPanel Grid.Column="0" Spacing="4">
+                <Grid ColumnDefinitions="Auto,Auto" HorizontalAlignment="Left">
+                    <TextBlock x:Name="CategoryNameText" Classes="Title" Text="Category Name" VerticalAlignment="Center" />
+                    <Border x:Name="DirectionBadge" Classes="Badge" Margin="12,0,0,0" VerticalAlignment="Center">
+                        <TextBlock x:Name="DirectionBadgeText" Classes="BadgeText" Text="Q->A" />
+                    </Border>
+                </Grid>
+                <TextBlock x:Name="TopicNameText" Classes="Subtitle" Text="Topic Name" />
+                <TextBlock x:Name="ProgressText" Classes="Subtitle" Text="Card 1 of 10" Margin="0,8,0,0" />
+                <ProgressBar x:Name="SessionProgressBar" Classes="SessionProgress" Minimum="0" Maximum="100" Value="10" Margin="0,4,0,0" HorizontalAlignment="Stretch" />
+            </StackPanel>
+            <Button Grid.Column="1" x:Name="BackButton" Content="Exit Review" Command="{Binding BackToSelectionCommand}" VerticalAlignment="Top" />
+        </Grid>
+
+        <!-- Main Card Section (Active Card) -->
+        <Border Grid.Row="1" x:Name="ActiveCardBorder" Classes="Card" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0,0,0,16">
+            <ScrollViewer>
+                <StackPanel Spacing="16">
+                    <!-- Loading Indicator -->
+                    <ProgressBar x:Name="CardLoadingIndicator" IsIndeterminate="True" Height="4" HorizontalAlignment="Stretch" />
+
+                    <!-- Question Container -->
+                    <StackPanel x:Name="QuestionContainer" Spacing="8">
+                        <TextBlock Text="QUESTION" FontSize="12" FontWeight="Bold" Foreground="#ff0073cf" />
+                        <StackPanel x:Name="QuestionTextPanel" Spacing="4" />
+                        <StackPanel x:Name="QuestionImagesPanel" Spacing="8" HorizontalAlignment="Center" />
+                    </StackPanel>
+
+                    <!-- Divider -->
+                    <Separator x:Name="CardDivider" Height="1" Background="#ff333333" Margin="0,8" />
+
+                    <!-- Answer Container -->
+                    <StackPanel x:Name="AnswerContainer" Spacing="8">
+                        <TextBlock Text="ANSWER" FontSize="12" FontWeight="Bold" Foreground="#ff107c41" />
+                        <StackPanel x:Name="AnswerTextPanel" Spacing="4" />
+                        <StackPanel x:Name="AnswerImagesPanel" Spacing="8" HorizontalAlignment="Center" />
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+        <!-- Finished Section (Visible when session ends) -->
+        <Border Grid.Row="1" x:Name="FinishedBorder" Classes="Card" VerticalAlignment="Center" HorizontalAlignment="Center" Width="400" Padding="32">
+            <StackPanel Spacing="20" HorizontalAlignment="Center">
+                <TextBlock Text="Review Completed!" Classes="Title" HorizontalAlignment="Center" Foreground="#ff107c41" />
+                <TextBlock Text="You have finished all scheduled reviews for this topic. Great job!" TextWrapping="Wrap" HorizontalAlignment="Center" TextAlignment="Center" />
+                <Button x:Name="FinishedBackButton" Content="Back to Selection" Command="{Binding BackToSelectionCommand}" Classes="ActionBtn ShowAnswer" HorizontalAlignment="Center" />
+            </StackPanel>
+        </Border>
+
+        <!-- Footer Actions Section -->
+        <Grid Grid.Row="2" x:Name="ActionsGrid">
+            <!-- Phase 1: Show Answer button -->
+            <Button x:Name="ShowAnswerButton" Content="Show Answer" Command="{Binding ShowAnswerCommand}" Classes="ActionBtn ShowAnswer" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
+
+            <!-- Phase 2: Evaluation buttons -->
+            <Grid x:Name="EvaluationButtonsGrid" ColumnDefinitions="*,*,*">
+                <Button Grid.Column="0" x:Name="UnknownButton" Content="Unknown" Command="{Binding UnknownCommand}" Classes="ActionBtn Unknown" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0,0,8,0" />
+                <Button Grid.Column="1" x:Name="KnowButton" Content="Know" Command="{Binding KnowCommand}" Classes="ActionBtn Know" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="8,0,8,0" />
+                <Button Grid.Column="2" x:Name="ArchiveButton" Content="Archive" Command="{Binding ArchiveCommand}" Classes="ActionBtn Archive" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="8,0,0,0" />
+            </Grid>
+        </Grid>
+    </Grid>
+</rxui:ReactiveUserControl>

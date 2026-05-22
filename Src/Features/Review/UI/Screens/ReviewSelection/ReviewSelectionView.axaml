@@ -1,0 +1,78 @@
+<rxui:ReactiveUserControl x:TypeArguments="local:ReviewSelectionViewModel"
+                          x:DataType="local:ReviewSelectionViewModel"
+                          xmlns="https://github.com/avaloniaui"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:rxui="http://reactiveui.net"
+                          xmlns:local="using:ProjektSlowkaRemasterd.Src.Features.Review.UI.Screens.ReviewSelection"
+                          x:Class="ProjektSlowkaRemasterd.Src.Features.Review.UI.Screens.ReviewSelection.ReviewSelectionView">
+
+    <UserControl.Styles>
+        <StyleInclude Source="/Src/Features/Review/UI/Screens/ReviewSelection/ScreenStyles/ReviewSelectionViewStyles.axaml" />
+    </UserControl.Styles>
+
+    <Grid Margin="24" RowDefinitions="Auto,*" ColumnDefinitions="*,2*">
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Spacing="4" Margin="0,0,0,24">
+            <TextBlock x:Name="TitleTextBlock" Text="Spaced Repetition Reviews" Classes="Title" />
+            <TextBlock Text="Select a category and choose a topic to begin your scheduled reviews." Foreground="#ffaaaaaa" />
+            <ProgressBar x:Name="LoadingBar" IsIndeterminate="True" Height="4" Margin="0,8,0,0" />
+        </StackPanel>
+
+        <!-- Left Column: Categories List -->
+        <Border Grid.Row="1" Grid.Column="0" Background="#ff1e1e1e" BorderBrush="#ff333333" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,12,0">
+            <Grid RowDefinitions="Auto,*">
+                <TextBlock Grid.Row="0" Text="Categories" FontSize="16" FontWeight="SemiBold" Foreground="White" Margin="0,0,0,12" />
+                <ListBox Grid.Row="1" x:Name="CategoriesListBox" Background="Transparent" BorderThickness="0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="local:CategoryReviewInfo">
+                            <Grid ColumnDefinitions="*,Auto" Margin="4,8">
+                                <TextBlock Grid.Column="0" Text="{Binding Category.Name}" FontWeight="Medium" VerticalAlignment="Center" />
+                                <Border Grid.Column="1" Background="#ff333333" CornerRadius="10" Padding="8,2" Margin="8,0,0,0" MinWidth="30">
+                                    <TextBlock Text="{Binding DueCount}" FontSize="11" FontWeight="Bold" Foreground="#ff0073cf" HorizontalAlignment="Center" />
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+        </Border>
+
+        <!-- Right Column: Topics List & Actions -->
+        <Border Grid.Row="1" Grid.Column="1" x:Name="TopicsPanelBorder" Background="#ff1e1e1e" BorderBrush="#ff333333" BorderThickness="1" CornerRadius="8" Padding="20" Margin="12,0,0,0">
+            <Grid RowDefinitions="Auto,Auto,Auto,*">
+                <!-- Category Summary Header -->
+                <TextBlock Grid.Row="0" x:Name="SelectedCategoryNameText" Text="Select a category on the left" FontSize="20" FontWeight="Bold" Foreground="White" Margin="0,0,0,4" />
+                <TextBlock Grid.Row="1" x:Name="SelectedCategoryStatusText" Text="Select a category to view due reviews." Foreground="#ffaaaaaa" Margin="0,0,0,16" />
+
+                <!-- Action: All in Category -->
+                <Button Grid.Row="2" x:Name="StartAllButton" Classes="StartAllBtn" Margin="0,0,0,24" HorizontalAlignment="Left">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <TextBlock Text="Review All Questions in Category" FontWeight="SemiBold" VerticalAlignment="Center" />
+                        <Border Background="#ff0073cf" CornerRadius="10" Padding="8,2">
+                            <TextBlock x:Name="AllCountText" Text="0 due" FontSize="11" FontWeight="Bold" Foreground="White" />
+                        </Border>
+                    </StackPanel>
+                </Button>
+
+                <!-- Topics list -->
+                <Grid Grid.Row="3" RowDefinitions="Auto,*">
+                    <TextBlock Grid.Row="0" Text="Review by Topic" FontSize="14" FontWeight="SemiBold" Foreground="#ffaaaaaa" Margin="0,0,0,12" />
+                    
+                    <ListBox Grid.Row="1" x:Name="TopicsListBox" Background="Transparent" BorderThickness="0">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate x:DataType="local:TopicReviewInfo">
+                                <Grid ColumnDefinitions="*,Auto,Auto" Margin="4,8">
+                                    <TextBlock Grid.Column="0" Text="{Binding Topic.Name}" FontWeight="Medium" VerticalAlignment="Center" />
+                                    <Border Grid.Column="1" Background="#ff333333" CornerRadius="10" Padding="8,2" Margin="12,0,12,0">
+                                        <TextBlock Text="{Binding DueCount}" FontSize="11" FontWeight="Bold" Foreground="#ff0073cf" />
+                                    </Border>
+                                    <Button Grid.Column="2" Content="Start Review" Classes="StartReviewBtn" Command="{Binding $parent[ListBox].((local:ReviewSelectionViewModel)DataContext).StartReviewCommand}" CommandParameter="{Binding}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</rxui:ReactiveUserControl>

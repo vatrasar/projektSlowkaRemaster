@@ -1,0 +1,15 @@
+<rxui:ReactiveWindow x:TypeArguments="local:MainWindowViewModel"
+        x:DataType="local:MainWindowViewModel"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="using:ProjektSlowkaRemasterd.Src.Features.Shell.UI.Screens.MainWindow"
+        xmlns:host="using:ProjektSlowkaRemasterd.Src.Features.Shell.UI.Screens.Host"
+        xmlns:rxui="http://reactiveui.net"
+        x:Class="ProjektSlowkaRemasterd.Src.Features.Shell.UI.Screens.MainWindow.MainWindowView"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="ProjektSlowkaRemasterd"
+        Background="{DynamicResource RegionColor}"
+        MinWidth="1000" MinHeight="650">
+
+    <host:HostView x:Name="HostViewControl" />
+</rxui:ReactiveWindow>

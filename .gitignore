@@ -1,0 +1,29 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+*.sln.docstates
+*.cache
+*.nupkg
+*.vs/
+
+## JetBrains Rider
+.idea/
+*.sln.iml
+_ReSharper.Caches/
+
+## Visual Studio Code
+.vscode/
+
+## OS
+.DS_Store
+Thumbs.db
+
+## Builds
+packages/
+*.log
+
+## Secret / local config
+appsettings.Local.json
+appsettings.Development.json

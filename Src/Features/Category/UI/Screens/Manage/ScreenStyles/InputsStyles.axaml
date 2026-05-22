@@ -1,0 +1,32 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- ListBoxes Base Styling -->
+    <Style Selector="ListBox.CategoryList, ListBox.QuestionList, ListBox.TopicList, ListBox.SectionList">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding" Value="0" />
+    </Style>
+
+    <Style Selector="ListBox.CategoryList > ListBoxItem">
+        <Setter Property="Padding" Value="8,10" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="Margin" Value="0,2" />
+    </Style>
+
+    <!-- TextBox Input Styling -->
+    <Style Selector="TextBox.Input">
+        <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SystemControlTransientBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="Padding" Value="8,6" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="TextBox.Input:focus">
+        <Setter Property="BorderBrush" Value="{DynamicResource SystemControlHighlightAccentBrush}" />
+    </Style>
+
+    <!-- CheckBox Toggle Styling -->
+    <Style Selector="CheckBox.Toggle">
+        <Setter Property="Padding" Value="6,0,0,0" />
+    </Style>
+</Styles>

@@ -1,0 +1,39 @@
+<rxui:ReactiveUserControl x:TypeArguments="local:AddCategoryViewModel"
+                           x:DataType="local:AddCategoryViewModel"
+                           xmlns="https://github.com/avaloniaui"
+                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                           xmlns:rxui="http://reactiveui.net"
+                           xmlns:local="using:ProjektSlowkaRemasterd.Src.Features.Category.UI.Screens.AddCategory"
+                           x:Class="ProjektSlowkaRemasterd.Src.Features.Category.UI.Screens.AddCategory.AddCategoryView">
+
+    <UserControl.Styles>
+        <StyleInclude Source="/Src/Features/Category/UI/Screens/AddCategory/ScreenStyles/AddCategoryViewStyles.axaml" />
+    </UserControl.Styles>
+
+    <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+        <Border Classes="Card" Width="420">
+            <StackPanel Spacing="20">
+                <!-- Title -->
+                <TextBlock Text="Add New Category" Classes="Title" />
+
+                <!-- Category Name Input -->
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Category Name" Classes="Label" />
+                    <TextBox x:Name="CategoryNameTextBox" Classes="Input" Watermark="e.g. Spanish - Common Nouns" />
+                </StackPanel>
+
+                <!-- Double Sided Option -->
+                <CheckBox x:Name="DoubleSidedCheckBox" Classes="Toggle" Content="Double-sided reviews (bidirectional)" />
+
+                <!-- Error Message -->
+                <TextBlock x:Name="ErrorTextBlock" Classes="Error" />
+
+                <!-- Action Buttons -->
+                <Grid ColumnDefinitions="*,*" Margin="0,10,0,0">
+                    <Button Grid.Column="0" x:Name="CancelButton" Content="Cancel" Classes="Secondary" HorizontalAlignment="Left" Width="170" HorizontalContentAlignment="Center" />
+                    <Button Grid.Column="1" x:Name="SaveCategoryButton" Content="Save" Classes="Primary" HorizontalAlignment="Right" Width="170" HorizontalContentAlignment="Center" />
+                </Grid>
+            </StackPanel>
+        </Border>
+    </Grid>
+</rxui:ReactiveUserControl>

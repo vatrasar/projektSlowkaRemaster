@@ -1,0 +1,15 @@
+<rxui:ReactiveUserControl x:TypeArguments="local:ForecastItem"
+                          x:DataType="local:ForecastItem"
+                          xmlns="https://github.com/avaloniaui"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:rxui="http://reactiveui.net"
+                          xmlns:local="using:ProjektSlowkaRemasterd.Src.Features.Home.UI.Screens.Home"
+                          x:Class="ProjektSlowkaRemasterd.Src.Features.Home.UI.Screens.Home.ScreenComponents.ForecastCard.ForecastCardView">
+    
+    <Border Classes="ForecastCard" Width="130" Height="100">
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock x:Name="DayTextBlock" Classes="DayText" HorizontalAlignment="Center" />
+            <TextBlock x:Name="CountTextBlock" Classes="CountText" HorizontalAlignment="Center" />
+        </StackPanel>
+    </Border>
+</rxui:ReactiveUserControl>

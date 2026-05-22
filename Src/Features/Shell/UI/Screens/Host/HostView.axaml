@@ -1,0 +1,74 @@
+<rxui:ReactiveUserControl x:TypeArguments="local:HostViewModel"
+                          x:DataType="local:HostViewModel"
+                          xmlns="https://github.com/avaloniaui"
+                          xmlns:local="using:ProjektSlowkaRemasterd.Src.Features.Shell.UI.Screens.Host"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:rxui="http://reactiveui.net"
+                          xmlns:material="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+                          x:Class="ProjektSlowkaRemasterd.Src.Features.Shell.UI.Screens.Host.HostView">
+
+    <UserControl.Styles>
+        <StyleInclude Source="/Src/Features/Shell/UI/Screens/Host/ScreenStyles/HostViewStyles.axaml" />
+    </UserControl.Styles>
+
+    <Grid ColumnDefinitions="240,*">
+        <!-- Sidebar -->
+        <Border Grid.Column="0" Classes="Sidebar">
+            <Grid RowDefinitions="Auto,*,Auto">
+                <!-- Title / Logo -->
+                <TextBlock Grid.Row="0" Classes="LogoText" Text="Antigravity Flashcards" />
+
+                <!-- Navigation List -->
+                <StackPanel Grid.Row="1" Spacing="6">
+                    <Button x:Name="HomeButton" Classes="NavButton">
+                        <StackPanel Orientation="Horizontal" Spacing="15" VerticalAlignment="Center">
+                            <material:MaterialIcon Kind="Home" Width="20" Height="20" Foreground="#ff0073cf"/>
+                            <TextBlock Text="Home" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="ReviewButton" Classes="NavButton">
+                        <StackPanel Orientation="Horizontal" Spacing="15" VerticalAlignment="Center">
+                            <material:MaterialIcon Kind="CardMultiple" Width="20" Height="20" Foreground="#ff0073cf"/>
+                            <TextBlock Text="Review for Today" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="TrainingButton" Classes="NavButton">
+                        <StackPanel Orientation="Horizontal" Spacing="15" VerticalAlignment="Center">
+                            <material:MaterialIcon Kind="School" Width="20" Height="20" Foreground="#ff0073cf"/>
+                            <TextBlock Text="Training Mode" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="ManageButton" Classes="NavButton">
+                        <StackPanel Orientation="Horizontal" Spacing="15" VerticalAlignment="Center">
+                            <material:MaterialIcon Kind="DatabaseEdit" Width="20" Height="20" Foreground="#ff0073cf"/>
+                            <TextBlock Text="Manage" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="SearchButton" Classes="NavButton">
+                        <StackPanel Orientation="Horizontal" Spacing="15" VerticalAlignment="Center">
+                            <material:MaterialIcon Kind="Magnify" Width="20" Height="20" Foreground="#ff0073cf"/>
+                            <TextBlock Text="Search" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+
+                <!-- Bottom Config / Settings -->
+                <StackPanel Grid.Row="2" Margin="0,0,0,20">
+                    <Button x:Name="SettingsButton" Classes="NavButton">
+                        <StackPanel Orientation="Horizontal" Spacing="15" VerticalAlignment="Center">
+                            <material:MaterialIcon Kind="Cog" Width="20" Height="20" Foreground="#ff0073cf"/>
+                            <TextBlock Text="Settings" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Main routed view area -->
+        <rxui:RoutedViewHost x:Name="ContentViewHost" Grid.Column="1" />
+    </Grid>
+</rxui:ReactiveUserControl>

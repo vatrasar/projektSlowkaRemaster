@@ -1,0 +1,97 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style Selector="TextBlock.Title">
+        <Setter Property="FontSize" Value="24" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Margin" Value="0,0,0,8" />
+    </Style>
+
+    <Style Selector="TextBlock.Subtitle">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="#ffaaaaaa" />
+        <Setter Property="Margin" Value="0,0,0,16" />
+    </Style>
+
+    <Style Selector="Border.PanelCard">
+        <Setter Property="Background" Value="#ff1e1e1e" />
+        <Setter Property="BorderBrush" Value="#ff333333" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="20" />
+    </Style>
+
+    <Style Selector="Button.ActionCard">
+        <Setter Property="Background" Value="#ff262626" />
+        <Setter Property="BorderBrush" Value="#ff3d3d3d" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="16" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="Margin" Value="0,0,0,12" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.15" />
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.15" />
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.ActionCard:pointerover">
+        <Setter Property="Background" Value="#ff333333" />
+        <Setter Property="BorderBrush" Value="#ff0073cf" />
+    </Style>
+
+    <Style Selector="Button.PrimaryActionBtn">
+        <Setter Property="Background" Value="#ff0073cf" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Padding" Value="16,10" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.15" />
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.PrimaryActionBtn:pointerover">
+        <Setter Property="Background" Value="#ff0084eb" />
+    </Style>
+
+    <Style Selector="Button.PrimaryActionBtn:disabled">
+        <Setter Property="Background" Value="#ff2d2d2d" />
+        <Setter Property="Foreground" Value="#ff777777" />
+    </Style>
+
+    <Style Selector="Button.SecondaryActionBtn">
+        <Setter Property="Background" Value="#ff262626" />
+        <Setter Property="BorderBrush" Value="#ff3d3d3d" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Padding" Value="16,10" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.15" />
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.SecondaryActionBtn:pointerover">
+        <Setter Property="Background" Value="#ff333333" />
+    </Style>
+
+    <Style Selector="Button.SecondaryActionBtn:disabled">
+        <Setter Property="Background" Value="#ff1c1c1c" />
+        <Setter Property="BorderBrush" Value="#ff222222" />
+        <Setter Property="Foreground" Value="#ff555555" />
+    </Style>
+
+    <Style Selector="ComboBox">
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="Margin" Value="0,0,0,16" />
+        <Setter Property="Padding" Value="12,8" />
+    </Style>
+</Styles>

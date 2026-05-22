@@ -1,0 +1,110 @@
+<rxui:ReactiveUserControl x:TypeArguments="local:TrainingSelectionViewModel"
+                           x:DataType="local:TrainingSelectionViewModel"
+                           xmlns="https://github.com/avaloniaui"
+                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                           xmlns:rxui="http://reactiveui.net"
+                           xmlns:local="using:ProjektSlowkaRemasterd.Src.Features.Training.UI.Screens.TrainingSelection"
+                           x:Class="ProjektSlowkaRemasterd.Src.Features.Training.UI.Screens.TrainingSelection.TrainingSelectionView">
+
+    <UserControl.Styles>
+        <StyleInclude Source="/Src/Features/Training/UI/Screens/TrainingSelection/ScreenStyles/TrainingSelectionViewStyles.axaml" />
+    </UserControl.Styles>
+
+    <Grid Margin="24" RowDefinitions="Auto,*" ColumnDefinitions="*,*">
+        <!-- Header Section -->
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Spacing="4" Margin="0,0,0,24">
+            <TextBlock x:Name="TitleTextBlock" Text="Training Mode" Classes="Title" />
+            <TextBlock Text="Learn and practice without affecting your spaced repetition database intervals." Classes="Subtitle" Margin="0" />
+            <ProgressBar x:Name="SelectionLoadingBar" IsIndeterminate="True" Height="4" Margin="0,8,0,0" />
+        </StackPanel>
+
+        <!-- Left Column: Global & Multi-Category Options -->
+        <Grid Grid.Row="1" Grid.Column="0" RowDefinitions="Auto,Auto,*" Margin="0,0,12,0">
+            <!-- Train Tomorrow Card -->
+            <Button Grid.Row="0" x:Name="TrainTomorrowButton" Classes="ActionCard">
+                <Grid ColumnDefinitions="*,Auto">
+                    <StackPanel Grid.Column="0" Spacing="4">
+                        <TextBlock Text="Train Tomorrow's Reviews" FontSize="16" FontWeight="SemiBold" Foreground="White" />
+                        <TextBlock Text="Practice review cards scheduled for tomorrow." FontSize="12" Foreground="#ffaaaaaa" />
+                    </StackPanel>
+                    <Border Grid.Column="1" Background="#ff333333" CornerRadius="12" Padding="10,4" VerticalAlignment="Center">
+                        <TextBlock x:Name="TomorrowCountText" Text="0 cards" FontSize="12" FontWeight="Bold" Foreground="#ff0073cf" />
+                    </Border>
+                </Grid>
+            </Button>
+
+            <!-- Train Problematic Card -->
+            <Button Grid.Row="1" x:Name="TrainProblematicButton" Classes="ActionCard">
+                <Grid ColumnDefinitions="*,Auto">
+                    <StackPanel Grid.Column="0" Spacing="4">
+                        <TextBlock Text="Train Problematic Cards" FontSize="16" FontWeight="SemiBold" Foreground="White" />
+                        <TextBlock Text="Practice questions with high failure statistics." FontSize="12" Foreground="#ffaaaaaa" />
+                    </StackPanel>
+                    <Border Grid.Column="1" Background="#ff333333" CornerRadius="12" Padding="10,4" VerticalAlignment="Center">
+                        <TextBlock x:Name="ProblematicCountText" Text="0 cards" FontSize="12" FontWeight="Bold" Foreground="#ff0073cf" />
+                    </Border>
+                </Grid>
+            </Button>
+
+            <!-- Multi-Category Select Card -->
+            <Border Grid.Row="2" Classes="PanelCard" Margin="0,4,0,0">
+                <Grid RowDefinitions="Auto,*,Auto">
+                    <TextBlock Grid.Row="0" Text="Train Marked Categories" FontSize="16" FontWeight="SemiBold" Foreground="White" Margin="0,0,0,12" />
+                    
+                    <ListBox Grid.Row="1" x:Name="CategoriesListBox" Background="Transparent" BorderThickness="0" Margin="0,0,0,16">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate x:DataType="local:CategoryTrainingInfo">
+                                <Grid ColumnDefinitions="*,Auto" Margin="4,4">
+                                    <CheckBox Grid.Column="0" 
+                                              IsChecked="{Binding IsMarked, Mode=OneWay}"
+                                              Command="{Binding $parent[ListBox].((local:TrainingSelectionViewModel)DataContext).ToggleCategoryMarkCommand}"
+                                              CommandParameter="{Binding Category.Id}"
+                                              Content="{Binding Category.Name}"
+                                              VerticalAlignment="Center" />
+                                    <Border Grid.Column="1" Background="#ff262626" CornerRadius="10" Padding="8,2" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding TotalCount}" FontSize="11" FontWeight="Bold" Foreground="#ff0073cf" />
+                                    </Border>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <Button Grid.Row="2" x:Name="TrainMarkedButton" Content="Train Marked Categories" Classes="PrimaryActionBtn" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Right Column: Specific Category/Topic Selection -->
+        <Border Grid.Row="1" Grid.Column="1" Classes="PanelCard" Margin="12,0,0,0">
+            <StackPanel Spacing="16">
+                <TextBlock Text="Train Specific Category &amp; Topic" FontSize="18" FontWeight="SemiBold" Foreground="White" Margin="0,0,0,8" />
+
+                <!-- Category Field -->
+                <TextBlock Text="Select Category" FontSize="12" FontWeight="SemiBold" Foreground="#ffaaaaaa" />
+                <ComboBox x:Name="CategoryComboBox" PlaceholderText="Choose a category...">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate x:DataType="local:CategoryTrainingInfo">
+                            <TextBlock Text="{Binding Category.Name}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+                <!-- Topic Field -->
+                <TextBlock Text="Select Topic (Optional)" FontSize="12" FontWeight="SemiBold" Foreground="#ffaaaaaa" />
+                <ComboBox x:Name="TopicComboBox" PlaceholderText="Choose a topic...">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate x:DataType="local:TopicTrainingInfo">
+                            <TextBlock Text="{Binding Topic.Name}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+                <!-- Actions -->
+                <StackPanel Spacing="12" Margin="0,16,0,0">
+                    <Button x:Name="TrainCategoryButton" Content="Train Whole Category" Classes="PrimaryActionBtn" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
+                    <Button x:Name="TrainTopicButton" Content="Train Specific Topic" Classes="SecondaryActionBtn" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </Grid>
+</rxui:ReactiveUserControl>

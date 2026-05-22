@@ -1,0 +1,33 @@
+<rxui:ReactiveUserControl x:TypeArguments="local:HomeViewModel"
+                          x:DataType="local:HomeViewModel"
+                          xmlns="https://github.com/avaloniaui"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:rxui="http://reactiveui.net"
+                          xmlns:local="using:ProjektSlowkaRemasterd.Src.Features.Home.UI.Screens.Home"
+                          xmlns:card="using:ProjektSlowkaRemasterd.Src.Features.Home.UI.Screens.Home.ScreenComponents.ForecastCard"
+                          x:Class="ProjektSlowkaRemasterd.Src.Features.Home.UI.Screens.Home.HomeView">
+
+    <UserControl.Styles>
+        <StyleInclude Source="/Src/Features/Home/UI/Screens/Home/ScreenStyles/HomeViewStyles.axaml" />
+    </UserControl.Styles>
+
+    <ScrollViewer Margin="30">
+        <StackPanel Spacing="20">
+            <TextBlock Text="Welcome Back!" Classes="WelcomeHeader" />
+            <TextBlock Text="Here is your review forecast for the next 7 days:" Classes="SectionTitle" />
+            
+            <ItemsControl x:Name="ReviewsItemsControl">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="local:ForecastItem">
+                        <card:ForecastCardView DataContext="{Binding}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </ScrollViewer>
+</rxui:ReactiveUserControl>

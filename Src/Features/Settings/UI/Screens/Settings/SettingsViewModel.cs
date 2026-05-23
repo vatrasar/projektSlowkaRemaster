@@ -82,18 +82,16 @@ public class SettingsViewModel : ViewModelBase<SettingsState>, IRoutableViewMode
                     Directory.CreateDirectory(backupPath);
                 }
 
-                var baseDir = AppDomain.CurrentDomain.BaseDirectory;
-                
                 // 1. Backup SQLite database
-                var dbSourcePath = Path.Combine(baseDir, "slowka.db");
+                var dbSourcePath = _config.ResolvedDatabasePath;
                 if (File.Exists(dbSourcePath))
                 {
-                    var dbDestPath = Path.Combine(backupPath, "slowka.db");
+                    var dbDestPath = Path.Combine(backupPath, Path.GetFileName(dbSourcePath));
                     File.Copy(dbSourcePath, dbDestPath, overwrite: true);
                 }
 
                 // 2. Backup media files
-                var mediaSourcePath = Path.Combine(baseDir, "media");
+                var mediaSourcePath = _config.ResolvedMediaDirectoryPath;
                 if (Directory.Exists(mediaSourcePath))
                 {
                     var mediaDestPath = Path.Combine(backupPath, "media");

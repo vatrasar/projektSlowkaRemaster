@@ -11,9 +11,12 @@ using Avalonia.Input.Platform;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using Avalonia.Data.Converters;
+using Microsoft.Extensions.Options;
 using ReactiveUI;
+using Splat;
 using Avalonia.ReactiveUI;
 
+using ProjektSlowkaRemasterd.Src.Core.Config;
 using ProjektSlowkaRemasterd.Src.Core.Domain.Models;
 using ProjektSlowkaRemasterd.Src.Core.Domain.Enums;
 using ProjektSlowkaRemasterd.Src.Features.Question.UI.Screens.QuestionEditor;
@@ -351,7 +354,9 @@ public class ImagePathToBitmapConverter : IValueConverter
                 }
                 else
                 {
-                    fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "media", pathOrFilename);
+                    var config = Locator.Current.GetService<IOptions<AppConfig>>()?.Value;
+                    var mediaDir = config?.ResolvedMediaDirectoryPath ?? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "media");
+                    fullPath = Path.Combine(mediaDir, pathOrFilename);
                 }
 
                 if (File.Exists(fullPath))

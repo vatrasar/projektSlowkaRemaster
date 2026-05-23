@@ -5,9 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using ReactiveUI;
 using Splat;
 using ProjektSlowkaRemasterd.Src.Core.Mvvm;
+using ProjektSlowkaRemasterd.Src.Core.Config;
 using ProjektSlowkaRemasterd.Src.Core.Domain.Models;
 using ProjektSlowkaRemasterd.Src.Core.Domain.RepositoryContracts;
 using ProjektSlowkaRemasterd.Src.Core.Domain.Enums;
@@ -32,6 +34,7 @@ public class QuestionEditorViewModel : ViewModelBase<QuestionEditorState>, IRout
     private readonly IQuestionRepository _questionRepository;
     private readonly IStatisticsRepository _statisticsRepository;
     private readonly IMediaRepository _mediaRepository;
+    private readonly AppConfig _config;
 
     private readonly List<TempImage> _tempImages = new();
     private readonly List<Media> _existingMediaToDelete = new();
@@ -65,7 +68,8 @@ public class QuestionEditorViewModel : ViewModelBase<QuestionEditorState>, IRout
         IStatisticsRepository statisticsRepository,
         IMediaRepository mediaRepository,
         int? categoryId = null,
-        int? questionId = null)
+        int? questionId = null,
+        AppConfig? config = null)
         : base(new QuestionEditorState { QuestionId = questionId })
     {
         HostScreen = hostScreen;
@@ -75,6 +79,7 @@ public class QuestionEditorViewModel : ViewModelBase<QuestionEditorState>, IRout
         _questionRepository = questionRepository ?? throw new ArgumentNullException(nameof(questionRepository));
         _statisticsRepository = statisticsRepository ?? throw new ArgumentNullException(nameof(statisticsRepository));
         _mediaRepository = mediaRepository ?? throw new ArgumentNullException(nameof(mediaRepository));
+        _config = config ?? Locator.Current.GetService<IOptions<AppConfig>>()!.Value;
 
         _prefilledCategoryId = categoryId;
 
@@ -399,7 +404,7 @@ public class QuestionEditorViewModel : ViewModelBase<QuestionEditorState>, IRout
             foreach (var m in _existingMediaToDelete)
             {
                 await _mediaRepository.DeleteAsync(m.Id);
-                var fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "media", m.Filename);
+                var fullPath = Path.Combine(_config.ResolvedMediaDirectoryPath, m.Filename);
                 if (File.Exists(fullPath))
                 {
                     File.Delete(fullPath);
@@ -408,7 +413,7 @@ public class QuestionEditorViewModel : ViewModelBase<QuestionEditorState>, IRout
             _existingMediaToDelete.Clear();
 
             // Handle new temp images
-            var mediaDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "media");
+            var mediaDir = _config.ResolvedMediaDirectoryPath;
             if (!Directory.Exists(mediaDir))
             {
                 Directory.CreateDirectory(mediaDir);

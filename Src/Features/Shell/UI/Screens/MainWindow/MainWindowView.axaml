@@ -6,7 +6,7 @@
         xmlns:host="using:ProjektSlowkaRemasterd.Src.Features.Shell.UI.Screens.Host"
         xmlns:rxui="http://reactiveui.net"
         x:Class="ProjektSlowkaRemasterd.Src.Features.Shell.UI.Screens.MainWindow.MainWindowView"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Assets/icon.ico"
         Title="ProjektSlowkaRemasterd"
         Background="{DynamicResource RegionColor}"
         MinWidth="1000" MinHeight="650">

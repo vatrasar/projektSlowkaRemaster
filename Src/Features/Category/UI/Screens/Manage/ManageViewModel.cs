@@ -5,9 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using ReactiveUI;
 using Splat;
 using ProjektSlowkaRemasterd.Src.Core.Mvvm;
+using ProjektSlowkaRemasterd.Src.Core.Config;
 using ProjektSlowkaRemasterd.Src.Core.Domain.Models;
 using ProjektSlowkaRemasterd.Src.Core.Domain.RepositoryContracts;
 using ProjektSlowkaRemasterd.Src.Core.Domain.Enums;
@@ -224,12 +226,13 @@ public class ManageViewModel : ViewModelBase<ManageState>, IRoutableViewModel
         {
             // Delete questions associated media files first
             var questions = await _questionRepository.GetByCategoryIdAsync(State.SelectedCategory.Id);
+            var config = Locator.Current.GetService<IOptions<AppConfig>>()!.Value;
             foreach (var q in questions)
             {
                 var mediaList = await _mediaRepository.GetByQuestionIdAsync(q.Id);
                 foreach (var m in mediaList)
                 {
-                    var fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "media", m.Filename);
+                    var fullPath = Path.Combine(config.ResolvedMediaDirectoryPath, m.Filename);
                     if (File.Exists(fullPath))
                     {
                         File.Delete(fullPath);
@@ -487,9 +490,10 @@ public class ManageViewModel : ViewModelBase<ManageState>, IRoutableViewModel
         {
             // Delete associated media files
             var mediaList = await _mediaRepository.GetByQuestionIdAsync(question.Id);
+            var config = Locator.Current.GetService<IOptions<AppConfig>>()!.Value;
             foreach (var m in mediaList)
             {
-                var fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "media", m.Filename);
+                var fullPath = Path.Combine(config.ResolvedMediaDirectoryPath, m.Filename);
                 if (File.Exists(fullPath))
                 {
                     File.Delete(fullPath);

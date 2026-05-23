@@ -3,6 +3,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
+using Splat;
+using ProjektSlowkaRemasterd.Src.Core.Config;
 using ProjektSlowkaRemasterd.Src.Core.Domain.RepositoryContracts;
 using ProjektSlowkaRemasterd.Src.Core.Domain.Models;
 using ProjektSlowkaRemasterd.Src.Core.Domain.Enums;
@@ -149,9 +152,12 @@ public class LaTeXGenerator
         var mediaList = await _mediaRepository.GetByQuestionIdAsync(questionId);
         var filteredMedia = mediaList.Where(m => m.Status == status).ToList();
 
+        var config = Locator.Current.GetService<IOptions<AppConfig>>()!.Value;
+        var mediaDir = config.ResolvedMediaDirectoryPath;
+
         foreach (var m in filteredMedia)
         {
-            var srcPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "media", m.Filename);
+            var srcPath = Path.Combine(mediaDir, m.Filename);
             if (File.Exists(srcPath))
             {
                 var destPath = Path.Combine(imagesDestDir, m.Filename);

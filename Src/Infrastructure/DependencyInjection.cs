@@ -29,8 +29,24 @@ public static class DependencyInjection
         // 2. Bind AppConfig options
         services.Configure<AppConfig>(configuration.GetSection("AppConfig"));
 
+        // Bind a temporary instance to resolve the database path during startup
+        var appConfig = new AppConfig();
+        configuration.GetSection("AppConfig").Bind(appConfig);
+        var dbPath = appConfig.ResolvedDatabasePath;
+
+        var dbDir = Path.GetDirectoryName(dbPath);
+        if (!string.IsNullOrEmpty(dbDir) && !Directory.Exists(dbDir))
+        {
+            Directory.CreateDirectory(dbDir);
+        }
+
+        var mediaPath = appConfig.ResolvedMediaDirectoryPath;
+        if (!string.IsNullOrEmpty(mediaPath) && !Directory.Exists(mediaPath))
+        {
+            Directory.CreateDirectory(mediaPath);
+        }
+
         // 3. Register DbContext
-        var dbPath = Path.Combine(baseDir, "slowka.db");
         services.AddDbContext<NameOfAppDbContext>(options =>
             options.UseSqlite($"Data Source={dbPath}"),
             ServiceLifetime.Transient); // Avoid context sharing issues across viewmodels

@@ -11,7 +11,10 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.ReactiveUI;
+using Microsoft.Extensions.Options;
 using ReactiveUI;
+using Splat;
+using ProjektSlowkaRemasterd.Src.Core.Config;
 using ProjektSlowkaRemasterd.Src.Core.Domain.Models;
 
 namespace ProjektSlowkaRemasterd.Src.Features.Training.UI.Screens.TrainingSession;
@@ -225,9 +228,12 @@ public partial class TrainingSessionView : ReactiveUserControl<TrainingSessionVi
         container.Children.Clear();
         if (mediaList == null) return;
 
+        var config = Locator.Current.GetService<IOptions<AppConfig>>()?.Value;
+        var mediaDir = config?.ResolvedMediaDirectoryPath ?? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "media");
+
         foreach (var m in mediaList)
         {
-            var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "media", m.Filename);
+            var filePath = Path.Combine(mediaDir, m.Filename);
             if (File.Exists(filePath))
             {
                 try

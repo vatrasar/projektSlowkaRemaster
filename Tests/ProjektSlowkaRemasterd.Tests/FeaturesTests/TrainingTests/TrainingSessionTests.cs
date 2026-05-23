@@ -166,6 +166,171 @@ public class TrainingSessionTests
         // Act 2: Click "Know" on A->Q -> should complete
         await vm.KnowCommand.Execute().ToTask();
 
+    }
+
+    [Fact]
+    public async Task TrainingSession_Bidirectional_State0_Unknown_ResetsDirectionToQtoA_ShiftsBack3()
+    {
+        var category = new Category { Id = 1, Name = "Languages", Reverse = true };
+        var questions = Enumerable.Range(1, 5).Select(i => new Question 
+        { 
+            Id = i, 
+            CategoryId = 1, 
+            QuestionText = $"Q{i}", 
+            AnswerText = $"A{i}" 
+        }).ToList();
+
+        _mockCategoryRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<Category> { category });
+
+        var vm = new TrainingSessionViewModel(
+            _mockScreen.Object,
+            questions,
+            "Title",
+            "Subtitle",
+            _mockCategoryRepo.Object,
+            _mockMediaRepo.Object
+        );
+
+        await vm.LoadSessionCommand.Execute().ToTask();
+
+        await vm.KnowCommand.Execute().ToTask();
+        await vm.KnowCommand.Execute().ToTask();
+        await vm.UnknownCommand.Execute().ToTask();
+
+        Assert.Equal("Q4", vm.State.QuestionText);
+
+        await vm.KnowCommand.Execute().ToTask();
+        await vm.KnowCommand.Execute().ToTask();
+
+        Assert.Equal("A1", vm.State.QuestionText);
+        await vm.KnowCommand.Execute().ToTask();
+
+        Assert.Equal("Q3", vm.State.QuestionText);
+        Assert.Equal("Q->A", vm.State.CurrentDirection);
+    }
+
+    [Fact]
+    public async Task TrainingSession_Bidirectional_State1_Know_MovesToState2_ShiftsBack10_KeepsQtoA()
+    {
+        var category = new Category { Id = 1, Name = "Languages", Reverse = true };
+        var questions = Enumerable.Range(1, 15).Select(i => new Question 
+        { 
+            Id = i, 
+            CategoryId = 1, 
+            QuestionText = $"Q{i}", 
+            AnswerText = $"A{i}" 
+        }).ToList();
+
+        _mockCategoryRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<Category> { category });
+
+        var vm = new TrainingSessionViewModel(
+            _mockScreen.Object,
+            questions,
+            "Title",
+            "Subtitle",
+            _mockCategoryRepo.Object,
+            _mockMediaRepo.Object
+        );
+
+        await vm.LoadSessionCommand.Execute().ToTask();
+
+        await vm.UnknownCommand.Execute().ToTask();
+        
+        await vm.KnowCommand.Execute().ToTask();
+        await vm.KnowCommand.Execute().ToTask();
+        await vm.KnowCommand.Execute().ToTask();
+        
+        Assert.Equal("Q1", vm.State.QuestionText);
+        Assert.Equal("Q->A", vm.State.CurrentDirection);
+
+        await vm.KnowCommand.Execute().ToTask();
+
+        Assert.Equal("Q5", vm.State.QuestionText);
+
+        for (int i = 5; i <= 14; i++)
+        {
+            await vm.KnowCommand.Execute().ToTask();
+        }
+
+        Assert.Equal("Q1", vm.State.QuestionText);
+        Assert.Equal("Q->A", vm.State.CurrentDirection);
+    }
+
+    [Fact]
+    public async Task TrainingSession_Bidirectional_SingleCardTransitionFlow()
+    {
+        var category = new Category { Id = 1, Name = "Languages", Reverse = true };
+        var questions = new List<Question> 
+        { 
+            new Question { Id = 1, CategoryId = 1, QuestionText = "Hello", AnswerText = "Cześć" }
+        };
+
+        _mockCategoryRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<Category> { category });
+
+        var vm = new TrainingSessionViewModel(
+            _mockScreen.Object,
+            questions,
+            "Title",
+            "Subtitle",
+            _mockCategoryRepo.Object,
+            _mockMediaRepo.Object
+        );
+
+        await vm.LoadSessionCommand.Execute().ToTask();
+
+        Assert.Equal("Hello", vm.State.QuestionText);
+        Assert.Equal("Q->A", vm.State.CurrentDirection);
+
+        await vm.UnknownCommand.Execute().ToTask();
+        Assert.Equal("Hello", vm.State.QuestionText);
+        Assert.Equal("Q->A", vm.State.CurrentDirection);
+
+        await vm.KnowCommand.Execute().ToTask();
+        Assert.Equal("Hello", vm.State.QuestionText);
+        Assert.Equal("Q->A", vm.State.CurrentDirection);
+
+        await vm.KnowCommand.Execute().ToTask();
+        Assert.Equal("Cześć", vm.State.QuestionText);
+        Assert.Equal("A->Q", vm.State.CurrentDirection);
+
+        await vm.KnowCommand.Execute().ToTask();
         Assert.True(vm.State.IsFinished);
     }
+
+    [Fact]
+    public async Task TrainingSession_Bidirectional_State2_Unknown_ResetsToState1QtoA()
+    {
+        var category = new Category { Id = 1, Name = "Languages", Reverse = true };
+        var questions = new List<Question> 
+        { 
+            new Question { Id = 1, CategoryId = 1, QuestionText = "Hello", AnswerText = "Cześć" }
+        };
+
+        _mockCategoryRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<Category> { category });
+
+        var vm = new TrainingSessionViewModel(
+            _mockScreen.Object,
+            questions,
+            "Title",
+            "Subtitle",
+            _mockCategoryRepo.Object,
+            _mockMediaRepo.Object
+        );
+
+        await vm.LoadSessionCommand.Execute().ToTask();
+
+        await vm.UnknownCommand.Execute().ToTask();
+        await vm.KnowCommand.Execute().ToTask();
+
+        await vm.UnknownCommand.Execute().ToTask();
+        
+        await vm.KnowCommand.Execute().ToTask();
+        Assert.Equal("Hello", vm.State.QuestionText);
+        Assert.Equal("Q->A", vm.State.CurrentDirection);
+
+        await vm.KnowCommand.Execute().ToTask();
+        Assert.Equal("Cześć", vm.State.QuestionText);
+        Assert.Equal("A->Q", vm.State.CurrentDirection);
+    }
 }
+

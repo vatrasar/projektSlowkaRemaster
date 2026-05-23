@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -37,6 +38,14 @@ public class LaTeXGenerator
         _mediaRepository = mediaRepository;
     }
 
+    /// <summary>
+    /// Exports all topics, sections, and questions under the specified category into a LaTeX document.
+    /// Invoked by:
+    /// - <see cref="ProjektSlowkaRemasterd.Src.Features.Category.UI.Screens.Manage.ManageViewModel"/>
+    /// </summary>
+    /// <param name="categoryId">The ID of the category to export.</param>
+    /// <param name="exportFolderPath">The target directory path to write the LaTeX document and its resources.</param>
+    /// <returns>A Task representing the asynchronous export operation.</returns>
     public async Task ExportCategoryAsync(int categoryId, string exportFolderPath)
     {
         var category = await _categoryRepository.GetByIdAsync(categoryId);
@@ -62,8 +71,12 @@ public class LaTeXGenerator
         
         // Preamble
         sb.AppendLine("\\documentclass{article}");
+        sb.AppendLine("\\usepackage[T1]{fontenc}");
         sb.AppendLine("\\usepackage[utf8]{inputenc}");
+        sb.AppendLine("\\usepackage[polish]{babel}");
+        sb.AppendLine("\\usepackage{lmodern}");
         sb.AppendLine("\\usepackage{graphicx}");
+        sb.AppendLine("\\usepackage{caption}");
         sb.AppendLine("\\usepackage{listings}");
         sb.AppendLine("\\usepackage{hyperref}");
         sb.AppendLine("\\usepackage{geometry}");
@@ -128,18 +141,24 @@ public class LaTeXGenerator
         
         if (q.IsNotion)
         {
-            sb.AppendLine("\\textbf{Note:}");
-            sb.AppendLine(FormatContent(q.AnswerText));
-            await AppendMediaLaTeXAsync(q.Id, MediaStatus.ANSWER, sb, imagesDestDir);
+            var (noteText, mediaLatex) = await FormatContentWithMediaRefsAsync(q.Id, MediaStatus.ANSWER, q.AnswerText, imagesDestDir);
+            sb.AppendLine("\\subsubsection*{Note}");
+            sb.AppendLine(noteText);
+            sb.AppendLine(mediaLatex);
         }
         else
         {
-            sb.AppendLine($"\\textbf{{Question:}} {FormatContent(q.QuestionText)}");
-            await AppendMediaLaTeXAsync(q.Id, MediaStatus.QUESTION, sb, imagesDestDir);
+            var (questionText, qMediaLatex) = await FormatContentWithMediaRefsAsync(q.Id, MediaStatus.QUESTION, q.QuestionText, imagesDestDir);
+            sb.AppendLine("\\subsubsection*{Question}");
+            sb.AppendLine(questionText);
+            sb.AppendLine(qMediaLatex);
 
             sb.AppendLine("\\vspace{0.2cm}");
-            sb.AppendLine($"\\textbf{{Answer:}} {FormatContent(q.AnswerText)}");
-            await AppendMediaLaTeXAsync(q.Id, MediaStatus.ANSWER, sb, imagesDestDir);
+
+            var (answerText, aMediaLatex) = await FormatContentWithMediaRefsAsync(q.Id, MediaStatus.ANSWER, q.AnswerText, imagesDestDir);
+            sb.AppendLine("\\subsubsection*{Answer}");
+            sb.AppendLine(answerText);
+            sb.AppendLine(aMediaLatex);
         }
 
         sb.AppendLine("\\hrulefill");
@@ -147,13 +166,20 @@ public class LaTeXGenerator
         sb.AppendLine("\\end{minipage}");
     }
 
-    private async Task AppendMediaLaTeXAsync(int questionId, MediaStatus status, StringBuilder sb, string imagesDestDir)
+    private async Task<(string Text, string MediaLatex)> FormatContentWithMediaRefsAsync(
+        int questionId,
+        MediaStatus status,
+        string contentText,
+        string imagesDestDir)
     {
         var mediaList = await _mediaRepository.GetByQuestionIdAsync(questionId);
         var filteredMedia = mediaList.Where(m => m.Status == status).ToList();
 
         var config = Locator.Current.GetService<IOptions<AppConfig>>()!.Value;
         var mediaDir = config.ResolvedMediaDirectoryPath;
+
+        var mediaSb = new StringBuilder();
+        var refList = new List<string>();
 
         foreach (var m in filteredMedia)
         {
@@ -163,12 +189,29 @@ public class LaTeXGenerator
                 var destPath = Path.Combine(imagesDestDir, m.Filename);
                 File.Copy(srcPath, destPath, overwrite: true);
 
-                sb.AppendLine("\\begin{center}");
-                // LaTeX path uses forward slashes
-                sb.AppendLine($"\\includegraphics[width=0.8\\textwidth]{{images/{m.Filename}}}");
-                sb.AppendLine("\\end{center}");
+                var label = $"fig:media_{m.Id}";
+                refList.Add($"\\ref{{{label}}}");
+
+                mediaSb.AppendLine("        \\begin{center}");
+                mediaSb.AppendLine($"            \\includegraphics[width=0.8\\textwidth]{{images/{m.Filename}}}");
+                mediaSb.AppendLine("            \\captionof{figure}{Ilustracja}");
+                mediaSb.AppendLine($"            \\label{{{label}}}");
+                mediaSb.AppendLine("        \\end{center}");
             }
         }
+
+        var formattedContent = FormatContent(contentText);
+        if (refList.Count > 0)
+        {
+            var refsString = string.Join(", ", refList);
+            if (formattedContent.EndsWith(Environment.NewLine))
+            {
+                formattedContent = formattedContent.TrimEnd();
+            }
+            formattedContent += $" (zobacz rys. {refsString})";
+        }
+
+        return (formattedContent, mediaSb.ToString());
     }
 
     private string FormatContent(string text)

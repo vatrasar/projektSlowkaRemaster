@@ -188,19 +188,61 @@ public class QuestionEditorViewModel : ViewModelBase<QuestionEditorState>, IRout
         }
     }
 
-    public void SetQuestionText(string text) => UpdateState(s => s with { QuestionText = text });
-    public void SetAnswerText(string text) => UpdateState(s => s with { AnswerText = text });
-    public void SetIsNote(bool isNote) => UpdateState(s => s with { IsNote = isNote });
-    public void SetIsProblematic(bool isProblematic) => UpdateState(s => s with { IsProblematic = isProblematic });
-    public void SetCustomSectionName(string name) => UpdateState(s => s with { CustomSectionName = name });
-    public void SetGroupId(int? groupId) => UpdateState(s => s with { GroupId = groupId });
-    public void SetErrorMessage(string message) => UpdateState(s => s with { ErrorMessage = message });
+    public void SetQuestionText(string text)
+    {
+        if (State.QuestionText == text) return;
+        UpdateState(s => s with { QuestionText = text });
+    }
+
+    public void SetAnswerText(string text)
+    {
+        if (State.AnswerText == text) return;
+        UpdateState(s => s with { AnswerText = text });
+    }
+
+    public void SetIsNote(bool isNote)
+    {
+        if (State.IsNote == isNote) return;
+        UpdateState(s => s with { IsNote = isNote });
+    }
+
+    public void SetIsProblematic(bool isProblematic)
+    {
+        if (State.IsProblematic == isProblematic) return;
+        UpdateState(s => s with { IsProblematic = isProblematic });
+    }
+
+    public void SetCustomSectionName(string name)
+    {
+        if (State.CustomSectionName == name) return;
+        UpdateState(s => s with { CustomSectionName = name });
+    }
+
+    public void SetGroupId(int? groupId)
+    {
+        if (State.GroupId == groupId) return;
+        UpdateState(s => s with { GroupId = groupId });
+    }
+
+    public void SetErrorMessage(string message)
+    {
+        if (State.ErrorMessage == message) return;
+        UpdateState(s => s with { ErrorMessage = message });
+    }
 
     public async Task SetSelectedCategory(Category? category)
     {
         if (category == null)
         {
-            UpdateState(s => s with { SelectedCategory = null, Topics = ImmutableList<Topic>.Empty, SelectedTopic = null, Sections = ImmutableList<Section>.Empty, SelectedSection = null });
+            if (State.SelectedCategory != null)
+            {
+                UpdateState(s => s with { SelectedCategory = null, Topics = ImmutableList<Topic>.Empty, SelectedTopic = null, Sections = ImmutableList<Section>.Empty, SelectedSection = null });
+            }
+            return;
+        }
+
+        if (State.SelectedCategory?.Id == category.Id)
+        {
             return;
         }
 
@@ -241,7 +283,15 @@ public class QuestionEditorViewModel : ViewModelBase<QuestionEditorState>, IRout
     {
         if (topic == null)
         {
-            UpdateState(s => s with { SelectedTopic = null, Sections = ImmutableList<Section>.Empty, SelectedSection = null });
+            if (State.SelectedTopic != null)
+            {
+                UpdateState(s => s with { SelectedTopic = null, Sections = ImmutableList<Section>.Empty, SelectedSection = null });
+            }
+            return;
+        }
+
+        if (State.SelectedTopic?.Id == topic.Id)
+        {
             return;
         }
 
@@ -259,6 +309,7 @@ public class QuestionEditorViewModel : ViewModelBase<QuestionEditorState>, IRout
 
     public void SetSelectedSection(Section? section)
     {
+        if (State.SelectedSection?.Id == section?.Id) return;
         UpdateState(s => s with { SelectedSection = section });
     }
 

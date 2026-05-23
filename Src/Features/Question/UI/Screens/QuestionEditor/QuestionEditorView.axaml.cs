@@ -102,13 +102,13 @@ public partial class QuestionEditorView : ReactiveUserControl<QuestionEditorView
                 .DisposeWith(disposables);
 
             // Custom Section Text
-            this.WhenAnyValue(v => v.CustomSectionTextBox.Text)
-                .Subscribe(Observer.Create<string?>(text => ViewModel?.SetCustomSectionName(text ?? string.Empty)))
-                .DisposeWith(disposables);
-
             this.OneWayBind(ViewModel,
                 vm => vm.State.CustomSectionName,
                 v => v.CustomSectionTextBox.Text);
+
+            this.WhenAnyValue(v => v.CustomSectionTextBox.Text)
+                .Subscribe(Observer.Create<string?>(text => ViewModel?.SetCustomSectionName(text ?? string.Empty)))
+                .DisposeWith(disposables);
 
             // Section field activity condition (requires topic selected)
             this.OneWayBind(ViewModel,
@@ -122,31 +122,31 @@ public partial class QuestionEditorView : ReactiveUserControl<QuestionEditorView
                 topic => topic != null);
 
             // Question Text Input
-            this.WhenAnyValue(v => v.QuestionTextBox.Text)
-                .Subscribe(Observer.Create<string?>(text => ViewModel?.SetQuestionText(text ?? string.Empty)))
-                .DisposeWith(disposables);
-
             this.OneWayBind(ViewModel,
                 vm => vm.State.QuestionText,
                 v => v.QuestionTextBox.Text);
 
-            // Answer Text Input
-            this.WhenAnyValue(v => v.AnswerTextBox.Text)
-                .Subscribe(Observer.Create<string?>(text => ViewModel?.SetAnswerText(text ?? string.Empty)))
+            this.WhenAnyValue(v => v.QuestionTextBox.Text)
+                .Subscribe(Observer.Create<string?>(text => ViewModel?.SetQuestionText(text ?? string.Empty)))
                 .DisposeWith(disposables);
 
+            // Answer Text Input
             this.OneWayBind(ViewModel,
                 vm => vm.State.AnswerText,
                 v => v.AnswerTextBox.Text);
 
-            // Is Note Checkbox
-            this.WhenAnyValue(v => v.IsNoteCheckBox.IsChecked)
-                .Subscribe(Observer.Create<bool?>(val => ViewModel?.SetIsNote(val ?? false)))
+            this.WhenAnyValue(v => v.AnswerTextBox.Text)
+                .Subscribe(Observer.Create<string?>(text => ViewModel?.SetAnswerText(text ?? string.Empty)))
                 .DisposeWith(disposables);
 
+            // Is Note Checkbox
             this.OneWayBind(ViewModel,
                 vm => vm.State.IsNote,
                 v => v.IsNoteCheckBox.IsChecked);
+
+            this.WhenAnyValue(v => v.IsNoteCheckBox.IsChecked)
+                .Subscribe(Observer.Create<bool?>(val => ViewModel?.SetIsNote(val ?? false)))
+                .DisposeWith(disposables);
 
             // Question textbox and images visibility bound to IsNote
             this.OneWayBind(ViewModel,
@@ -155,15 +155,20 @@ public partial class QuestionEditorView : ReactiveUserControl<QuestionEditorView
                 isNote => !isNote);
 
             // Is Problematic Checkbox
-            this.WhenAnyValue(v => v.IsProblematicCheckBox.IsChecked)
-                .Subscribe(Observer.Create<bool?>(val => ViewModel?.SetIsProblematic(val ?? false)))
-                .DisposeWith(disposables);
-
             this.OneWayBind(ViewModel,
                 vm => vm.State.IsProblematic,
                 v => v.IsProblematicCheckBox.IsChecked);
 
+            this.WhenAnyValue(v => v.IsProblematicCheckBox.IsChecked)
+                .Subscribe(Observer.Create<bool?>(val => ViewModel?.SetIsProblematic(val ?? false)))
+                .DisposeWith(disposables);
+
             // Group Connection ID Input
+            this.OneWayBind(ViewModel,
+                vm => vm.State.GroupId,
+                v => v.GroupIdTextBox.Text,
+                gId => gId?.ToString() ?? string.Empty);
+
             this.WhenAnyValue(v => v.GroupIdTextBox.Text)
                 .Subscribe(Observer.Create<string?>(text => {
                     if (int.TryParse(text, out int gId))
@@ -172,11 +177,6 @@ public partial class QuestionEditorView : ReactiveUserControl<QuestionEditorView
                         ViewModel?.SetGroupId(null);
                 }))
                 .DisposeWith(disposables);
-
-            this.OneWayBind(ViewModel,
-                vm => vm.State.GroupId,
-                v => v.GroupIdTextBox.Text,
-                gId => gId?.ToString() ?? string.Empty);
 
             // Image list ItemSources
             this.OneWayBind(ViewModel,

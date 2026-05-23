@@ -39,6 +39,30 @@ An advanced, feature-rich **Spaced Repetition Flashcard System** built for moder
 
 ---
 
+## 📦 Installation (Pre-built Binaries)
+
+For Ubuntu, Debian, or other Debian-based Linux distributions, you can download the official `.deb` package from the [Releases Page](https://github.com/vatrasar/projektSlowkaRemaster/releases/tag/v1.0.0).
+
+### Install via Terminal
+1. Download the `.deb` package (e.g., `projekt-slowka-remaster_1.0.deb`).
+2. Run the following command to install the package and its dependencies:
+   ```bash
+   sudo apt install ./projekt-slowka-remaster_1.0.deb
+   ```
+   *Alternatively, if you use `dpkg`:*
+   ```bash
+   sudo dpkg -i projekt-slowka-remaster_1.0.deb
+   sudo apt install -f
+   ```
+
+### Launch the Application
+Once installed, you can launch it directly from your desktop environment's application menu (search for **Projekt Słówka Remastered**) or by running:
+```bash
+projekt-slowka-remasterd
+```
+
+---
+
 ## 🌟 Key Features
 
 ### 📅 Advanced Spaced Repetition (SRS)
@@ -82,27 +106,26 @@ Following modern clean-code architecture, the codebase is structured around a fe
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Getting Started (From Source)
 
 ### Prerequisites
 * **.NET 10 SDK** (matching targeted framework `net10.0`)
 * SQLite (automatically managed by EF Core)
 
-### Run the Application
-From the repository root (`project/`), run:
-```bash
-dotnet run
-```
-Or from the workspace root:
-```bash
-dotnet run --project project/ProjektSlowkaRemasterd.csproj
-```
-
-### Run Tests
-To run unit and behavior tests:
-```bash
-dotnet test
-```
+### Clone & Run
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/vatrasar/projektSlowkaRemaster.git
+   cd projektSlowkaRemaster
+   ```
+2. Run the application:
+   ```bash
+   dotnet run
+   ```
+3. Run tests:
+   ```bash
+   dotnet test
+   ```
 
 ---
 

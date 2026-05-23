@@ -29,16 +29,108 @@
             </Grid>
 
             <!-- Main Split Layout -->
-            <Grid Grid.Row="1" ColumnDefinitions="2*,1*">
+            <Grid Grid.Row="1" ColumnDefinitions="2*,1.1*">
                 
                 <!-- Left Column: Form -->
-                <Border Grid.Column="0" Classes="Card" Margin="0,0,20,0">
-                    <StackPanel Spacing="15">
+                <Border Grid.Column="0" Classes="Card" Margin="0,0,20,0" VerticalAlignment="Stretch">
+                    <Grid RowDefinitions="*,Auto,Auto">
                         
-                        <!-- Dropdowns in a Row -->
-                        <Grid ColumnDefinitions="*,*,*">
+                        <!-- Input Panels in UniformGrid to share height equally -->
+                        <UniformGrid Grid.Row="0" Columns="1">
+                            
+                            <!-- Question Input -->
+                            <Grid x:Name="QuestionInputPanel" RowDefinitions="Auto,*,Auto" Margin="0,0,0,10">
+                                <!-- Question Header Row -->
+                                <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,8">
+                                    <TextBlock Grid.Column="0" Text="Question" Classes="Label" VerticalAlignment="Center" />
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                                        <Button x:Name="ChooseQuestionImageButton" Content="Choose Image File" Classes="SecondarySmall" />
+                                        <Button x:Name="PasteQuestionImageButton" Content="Paste Clipboard" Classes="SecondarySmall" />
+                                    </StackPanel>
+                                </Grid>
+                                
+                                <TextBox Grid.Row="1" x:Name="QuestionTextBox" Classes="Input" AcceptsReturn="True" TextWrapping="Wrap" Watermark="Enter question..." MinHeight="100" VerticalAlignment="Stretch" />
+                                
+                                <!-- Question Images Attachment -->
+                                <ItemsControl Grid.Row="2" x:Name="QuestionImagesItemsControl" Margin="0,5,0,0">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Orientation="Horizontal" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="x:String">
+                                            <Border Classes="ImageThumbContainer">
+                                                <Grid ColumnDefinitions="*,Auto">
+                                                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="5">
+                                                        <Image Source="{Binding Converter={StaticResource PathToBitmapConverter}}" Height="40" Width="40" Stretch="UniformToFill"/>
+                                                        <TextBlock Text="{Binding}" Classes="ImageNameText" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                                                    </StackPanel>
+                                                    <Button x:Name="RemoveQuestionImageButton" Content="✕" Click="OnRemoveQuestionImageClick" Classes="RemoveImageButton" VerticalAlignment="Center"/>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Grid>
+
+                            <!-- Answer Input -->
+                            <Grid x:Name="AnswerInputPanel" RowDefinitions="Auto,*,Auto" Margin="0,0,0,10">
+                                <!-- Answer Header Row -->
+                                <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,8">
+                                    <TextBlock Grid.Column="0" Text="Answer / Content" Classes="Label" VerticalAlignment="Center" />
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                                        <Button x:Name="ChooseAnswerImageButton" Content="Choose Image File" Classes="SecondarySmall" />
+                                        <Button x:Name="PasteAnswerImageButton" Content="Paste Clipboard" Classes="SecondarySmall" />
+                                    </StackPanel>
+                                </Grid>
+
+                                <TextBox Grid.Row="1" x:Name="AnswerTextBox" Classes="Input" AcceptsReturn="True" TextWrapping="Wrap" Watermark="Enter answer or note content..." MinHeight="100" VerticalAlignment="Stretch" />
+                                
+                                <!-- Answer Images Attachment -->
+                                <ItemsControl Grid.Row="2" x:Name="AnswerImagesItemsControl" Margin="0,5,0,0">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Orientation="Horizontal" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="x:String">
+                                            <Border Classes="ImageThumbContainer">
+                                                <Grid ColumnDefinitions="*,Auto">
+                                                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="5">
+                                                        <Image Source="{Binding Converter={StaticResource PathToBitmapConverter}}" Height="40" Width="40" Stretch="UniformToFill"/>
+                                                        <TextBlock Text="{Binding}" Classes="ImageNameText" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                                                    </StackPanel>
+                                                    <Button x:Name="RemoveAnswerImageButton" Content="✕" Click="OnRemoveAnswerImageClick" Classes="RemoveImageButton" VerticalAlignment="Center"/>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Grid>
+                            
+                        </UniformGrid>
+
+                        <!-- Success / Error Text -->
+                        <StackPanel Grid.Row="1" HorizontalAlignment="Center" Margin="0,0,0,5">
+                            <TextBlock x:Name="SuccessTextBlock" Classes="Success" HorizontalAlignment="Center" Margin="0,2,0,2" />
+                            <TextBlock x:Name="ErrorTextBlock" Classes="Error" HorizontalAlignment="Center" Margin="0,2,0,2" />
+                        </StackPanel>
+
+                        <!-- Save Button -->
+                        <Button Grid.Row="2" x:Name="SaveButton" Content="Save Question" Classes="Primary" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Width="200" Margin="0,5,0,0" />
+                    </Grid>
+                </Border>
+
+                <!-- Right Column: Options Card -->
+                <Border Grid.Column="1" Classes="Card" VerticalAlignment="Stretch">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="Options" Classes="SubTitle" Margin="0,0,0,5" />
+                            
                             <!-- Category -->
-                            <StackPanel Grid.Column="0" Spacing="4" Margin="0,0,10,0">
+                            <StackPanel Spacing="4">
                                 <TextBlock Text="Category" Classes="Label" />
                                 <ComboBox x:Name="CategoryComboBox" HorizontalAlignment="Stretch">
                                     <ComboBox.ItemTemplate>
@@ -50,7 +142,7 @@
                             </StackPanel>
 
                             <!-- Topic -->
-                            <StackPanel Grid.Column="1" Spacing="4" Margin="0,0,10,0">
+                            <StackPanel Spacing="4">
                                 <TextBlock Text="Topic (Optional)" Classes="Label" />
                                 <ComboBox x:Name="TopicComboBox" HorizontalAlignment="Stretch">
                                     <ComboBox.ItemTemplate>
@@ -62,7 +154,7 @@
                             </StackPanel>
 
                             <!-- Section -->
-                            <StackPanel Grid.Column="2" Spacing="4">
+                            <StackPanel Spacing="4">
                                 <TextBlock Text="Section (Optional)" Classes="Label" />
                                 <ComboBox x:Name="SectionComboBox" HorizontalAlignment="Stretch">
                                     <ComboBox.ItemTemplate>
@@ -72,128 +164,32 @@
                                     </ComboBox.ItemTemplate>
                                 </ComboBox>
                             </StackPanel>
-                        </Grid>
 
-                        <!-- Custom Section Name -->
-                        <StackPanel Spacing="4">
-                            <TextBlock Text="Or create new Section name" Classes="Label" />
-                            <TextBox x:Name="CustomSectionTextBox" Classes="Input" Watermark="Type new section name... (requires Topic selected)" />
-                        </StackPanel>
-
-                        <!-- Checkboxes Row -->
-                        <Grid ColumnDefinitions="Auto,Auto,*">
-                            <CheckBox Grid.Column="0" x:Name="IsNoteCheckBox" Classes="Toggle" Content="Is Note" Margin="0,0,20,0" />
-                            <CheckBox Grid.Column="1" x:Name="IsProblematicCheckBox" Classes="Toggle" Content="Mark as Problematic" />
-                        </Grid>
-
-                        <!-- Group ID -->
-                        <StackPanel Spacing="4">
-                            <TextBlock Text="Group Connection ID (Optional)" Classes="Label" />
-                            <TextBox x:Name="GroupIdTextBox" Classes="Input" Watermark="Numeric group ID (e.g. 5) to link related questions" />
-                        </StackPanel>
-
-                        <!-- Question Input -->
-                        <StackPanel x:Name="QuestionInputPanel" Spacing="4">
-                            <TextBlock Text="Question" Classes="Label" />
-                            <TextBox x:Name="QuestionTextBox" Classes="Input" Height="100" AcceptsReturn="True" TextWrapping="Wrap" Watermark="Enter question..." />
-                            
-                            <!-- Question Images Attachment -->
-                            <StackPanel x:Name="QuestionImagesPanel" Spacing="8" Margin="0,5,0,0">
-                                <TextBlock Text="Question Attachments" Classes="SubLabel" />
-                                <Grid ColumnDefinitions="*,*">
-                                    <Button Grid.Column="0" x:Name="ChooseQuestionImageButton" Content="Choose Image File" Classes="SecondarySmall" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0,0,10,0"/>
-                                    <Button Grid.Column="1" x:Name="PasteQuestionImageButton" Content="Paste Clipboard" Classes="SecondarySmall" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
-                                </Grid>
-                                <ItemsControl x:Name="QuestionImagesItemsControl" Margin="0,5,0,0">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <WrapPanel Orientation="Horizontal" />
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate x:DataType="x:String">
-                                            <Border Classes="ImageThumbContainer">
-                                                <Grid ColumnDefinitions="*,Auto">
-                                                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="5">
-                                                        <Image Source="{Binding Converter={StaticResource PathToBitmapConverter}}" Height="40" Width="40" Stretch="UniformToFill"/>
-                                                        <TextBlock Text="{Binding}" Classes="ImageNameText" VerticalAlignment="Center" Margin="5,0,0,0"/>
-                                                    </StackPanel>
-                                                    <Button Grid.Column="1" Content="✕" Click="OnRemoveQuestionImageClick" Classes="RemoveImageButton" VerticalAlignment="Center"/>
-                                                </Grid>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
+                            <!-- Custom Section Name -->
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="Or create new Section name" Classes="Label" />
+                                <TextBox x:Name="CustomSectionTextBox" Classes="Input" Watermark="Type new section name... (requires Topic selected)" />
                             </StackPanel>
-                        </StackPanel>
 
-                        <!-- Answer Input -->
-                        <StackPanel Spacing="4">
-                            <TextBlock Text="Answer / Content" Classes="Label" />
-                            <TextBox x:Name="AnswerTextBox" Classes="Input" Height="140" AcceptsReturn="True" TextWrapping="Wrap" Watermark="Enter answer or note content..." />
-                            
-                            <!-- Answer Images Attachment -->
-                            <StackPanel Spacing="8" Margin="0,5,0,0">
-                                <TextBlock Text="Answer Attachments" Classes="SubLabel" />
-                                <Grid ColumnDefinitions="*,*">
-                                    <Button Grid.Column="0" x:Name="ChooseAnswerImageButton" Content="Choose Image File" Classes="SecondarySmall" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0,0,10,0"/>
-                                    <Button Grid.Column="1" x:Name="PasteAnswerImageButton" Content="Paste Clipboard" Classes="SecondarySmall" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
-                                </Grid>
-                                <ItemsControl x:Name="AnswerImagesItemsControl" Margin="0,5,0,0">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <WrapPanel Orientation="Horizontal" />
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate x:DataType="x:String">
-                                            <Border Classes="ImageThumbContainer">
-                                                <Grid ColumnDefinitions="*,Auto">
-                                                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="5">
-                                                        <Image Source="{Binding Converter={StaticResource PathToBitmapConverter}}" Height="40" Width="40" Stretch="UniformToFill"/>
-                                                        <TextBlock Text="{Binding}" Classes="ImageNameText" VerticalAlignment="Center" Margin="5,0,0,0"/>
-                                                    </StackPanel>
-                                                    <Button Grid.Column="1" Content="✕" Click="OnRemoveAnswerImageClick" Classes="RemoveImageButton" VerticalAlignment="Center"/>
-                                                </Grid>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
+                            <!-- Checkboxes -->
+                            <StackPanel Spacing="8" Margin="0,5,0,5">
+                                <CheckBox x:Name="IsNoteCheckBox" Classes="Toggle" Content="Is Note" />
+                                <CheckBox x:Name="IsProblematicCheckBox" Classes="Toggle" Content="Mark as Problematic" />
                             </StackPanel>
-                        </StackPanel>
 
-                        <!-- Success / Error Text -->
-                        <TextBlock x:Name="SuccessTextBlock" Classes="Success" />
-                        <TextBlock x:Name="ErrorTextBlock" Classes="Error" />
+                            <!-- Group Connection ID -->
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="Group Connection ID (Optional)" Classes="Label" />
+                                <TextBox x:Name="GroupIdTextBox" Classes="Input" Watermark="Numeric group ID (e.g. 5) to link related questions" />
+                            </StackPanel>
 
-                        <!-- Save Button -->
-                        <Button x:Name="SaveButton" Content="Save Question" Classes="Primary" HorizontalAlignment="Right" HorizontalContentAlignment="Center" Width="200" />
-                    </StackPanel>
-                </Border>
-
-                <!-- Right Column: Last Added Preview -->
-                <Border Grid.Column="1" x:Name="LastAddedPreviewBorder" Classes="CardPreview" VerticalAlignment="Top">
-                    <StackPanel Spacing="15">
-                        <TextBlock Text="Last Added Question Preview" Classes="SubTitle" />
-                        
-                        <StackPanel Spacing="8">
-                            <TextBlock Text="Question (Preview):" Classes="Label" />
-                            <Border Classes="PreviewTextContainer">
-                                <TextBlock x:Name="LastAddedQuestionTextBlock" TextWrapping="Wrap" />
+                            <!-- Edit Last Added Button Wrapper -->
+                            <Border x:Name="LastAddedPreviewBorder" Margin="0,8,0,0">
+                                <Button x:Name="EditLastAddedButton" Content="Edit Last Question" Classes="Secondary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
                             </Border>
                         </StackPanel>
-
-                        <StackPanel Spacing="8">
-                            <TextBlock Text="Answer (Preview):" Classes="Label" />
-                            <Border Classes="PreviewTextContainer">
-                                <TextBlock x:Name="LastAddedAnswerTextBlock" TextWrapping="Wrap" />
-                            </Border>
-                        </StackPanel>
-
-                        <Button x:Name="EditLastAddedButton" Content="Edit Last Added" Classes="Secondary" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
-                    </StackPanel>
+                    </ScrollViewer>
                 </Border>
-
             </Grid>
         </Grid>
     </ScrollViewer>

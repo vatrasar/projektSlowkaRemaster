@@ -29,8 +29,8 @@ using Question = ProjektSlowkaRemasterd.Src.Core.Domain.Models.Question;
 
 /// <summary>
 /// Screen: QuestionEditorView
-/// Purpose: UI for creating and editing questions and notes with category/topic/section structure, media attachments, and preview functionality.
-/// Available Functionalities: Select category, select topic, select/create section, add images (file or clipboard), edit note flag, edit problematic flag, group ID field, preview last added card.
+/// Purpose: UI for creating and editing questions and notes with category/topic/section structure, media attachments, and quick edit of the last added question.
+/// Available Functionalities: Select category, select topic, select/create section, add images (file or clipboard), edit note flag, edit problematic flag, group ID field, navigate to edit the last added question.
 /// Key UI Elements: CategoryComboBox, TopicComboBox, SectionComboBox, CustomSectionTextBox, QuestionTextBox, AnswerTextBox, SaveButton, BackButton, EditLastAddedButton.
 /// Navigation:
 ///   - Navigate From: ManageView, HomeView
@@ -219,13 +219,6 @@ public partial class QuestionEditorView : ReactiveUserControl<QuestionEditorView
                 v => v.LastAddedPreviewBorder.IsVisible,
                 id => id.HasValue);
 
-            this.OneWayBind(ViewModel,
-                vm => vm.State.LastAddedQuestionText,
-                v => v.LastAddedQuestionTextBlock.Text);
-
-            this.OneWayBind(ViewModel,
-                vm => vm.State.LastAddedAnswerText,
-                v => v.LastAddedAnswerTextBlock.Text);
 
             // Edit last added button execution
             Observable.FromEventPattern(EditLastAddedButton, nameof(Button.Click))

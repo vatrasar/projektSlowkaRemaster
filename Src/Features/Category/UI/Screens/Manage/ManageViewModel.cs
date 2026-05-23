@@ -4,6 +4,8 @@ using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using ReactiveUI;
@@ -44,6 +46,8 @@ public class ManageViewModel : ViewModelBase<ManageState>, IRoutableViewModel
     public ReactiveCommand<Section, Unit> DeleteSectionCommand { get; }
 
     public ReactiveCommand<Unit, Unit> ExportCategoryCommand { get; }
+    public Interaction<Unit, string?> ShowFolderPickerInteraction { get; } = new();
+
     public ReactiveCommand<Unit, IRoutableViewModel> NavigateToAddCategoryCommand { get; }
     public ReactiveCommand<Unit, IRoutableViewModel> NavigateToAddQuestionCommand { get; }
 
@@ -521,20 +525,36 @@ public class ManageViewModel : ViewModelBase<ManageState>, IRoutableViewModel
     private async Task ExportCategoryToLaTeXAsync()
     {
         if (State.SelectedCategory == null) return;
+
+        var selectedParentPath = await ShowFolderPickerInteraction.Handle(Unit.Default);
+        if (string.IsNullOrEmpty(selectedParentPath))
+        {
+            return;
+        }
+
+        await ExecuteLaTeXExportAsync(selectedParentPath);
+    }
+
+    private async Task ExecuteLaTeXExportAsync(string selectedParentPath)
+    {
         UpdateState(s => s with { IsLoading = true, ErrorMessage = string.Empty, SuccessMessage = string.Empty });
         try
         {
-            // Generate in base directory + LaTeXExport/[CategoryName]
-            var folderName = string.Join("_", State.SelectedCategory.Name.Split(Path.GetInvalidFileNameChars()));
-            var exportPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "LaTeXExport", folderName);
-
-            await _latexGenerator.ExportCategoryAsync(State.SelectedCategory.Id, exportPath);
-
-            UpdateState(s => s with { IsLoading = false, SuccessMessage = $"Category exported successfully to: {exportPath}" });
+            await ExportToFolderAsync(selectedParentPath);
         }
         catch (Exception ex)
         {
             UpdateState(s => s with { IsLoading = false, ErrorMessage = $"Export failed: {ex.Message}" });
         }
+    }
+
+    private async Task ExportToFolderAsync(string selectedParentPath)
+    {
+        var folderName = string.Join("_", State.SelectedCategory!.Name.Split(Path.GetInvalidFileNameChars()));
+        var exportPath = Path.Combine(selectedParentPath, folderName);
+
+        await _latexGenerator.ExportCategoryAsync(State.SelectedCategory.Id, exportPath);
+
+        UpdateState(s => s with { IsLoading = false, SuccessMessage = $"Category exported successfully to: {exportPath}" });
     }
 }

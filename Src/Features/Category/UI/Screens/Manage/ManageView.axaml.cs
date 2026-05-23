@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
@@ -8,6 +9,7 @@ using Avalonia.Data.Converters;
 using Avalonia.Interactivity;
 using ReactiveUI;
 using Avalonia.ReactiveUI;
+using Avalonia.Platform.Storage;
 using ProjektSlowkaRemasterd.Src.Features.Category.UI.Screens.Manage;
 using ProjektSlowkaRemasterd.Src.Core.Domain.Models;
 using ProjektSlowkaRemasterd.Src.Core.Domain.Enums;
@@ -240,6 +242,12 @@ public partial class ManageView : ReactiveUserControl<ManageViewModel>
                 vm => vm.ExportCategoryCommand,
                 v => v.ExportLaTeXButton);
 
+            ViewModel!.ShowFolderPickerInteraction.RegisterHandler(async interaction =>
+            {
+                var folderPath = await ShowFolderPickerAsync();
+                interaction.SetOutput(folderPath);
+            }).DisposeWith(disposables);
+
             this.BindCommand(ViewModel,
                 vm => vm.NavigateToAddQuestionCommand,
                 v => v.AddQuestionButton);
@@ -343,6 +351,34 @@ public partial class ManageView : ReactiveUserControl<ManageViewModel>
                 await ViewModel.DeleteSectionCommand.Execute(section);
             }
         }
+    }
+
+    private async Task<string?> ShowFolderPickerAsync()
+    {
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel?.StorageProvider == null)
+        {
+            return null;
+        }
+
+        var options = new FolderPickerOpenOptions
+        {
+            Title = "Select Export Folder",
+            AllowMultiple = false
+        };
+
+        var folders = await topLevel.StorageProvider.OpenFolderPickerAsync(options);
+        if (folders.Count == 0)
+        {
+            return null;
+        }
+
+        if (!folders[0].Path.IsAbsoluteUri)
+        {
+            return null;
+        }
+
+        return folders[0].Path.LocalPath;
     }
 }
 

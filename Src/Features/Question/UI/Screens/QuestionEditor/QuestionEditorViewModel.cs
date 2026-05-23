@@ -208,7 +208,28 @@ public class QuestionEditorViewModel : ViewModelBase<QuestionEditorState>, IRout
         try
         {
             var topics = (await _topicRepository.GetByCategoryIdAsync(category.Id)).ToList();
-            UpdateState(s => s with { Topics = topics.ToImmutableList(), SelectedTopic = null, Sections = ImmutableList<Section>.Empty, SelectedSection = null, IsLoading = false });
+            int? lastAddedId = null;
+            string lastAddedQ = string.Empty;
+            string lastAddedA = string.Empty;
+            var lastAdded = await _questionRepository.GetLastAddedAsync(category.Id);
+            if (lastAdded != null)
+            {
+                lastAddedId = lastAdded.Id;
+                lastAddedQ = lastAdded.QuestionText;
+                lastAddedA = lastAdded.AnswerText;
+            }
+
+            UpdateState(s => s with 
+            { 
+                Topics = topics.ToImmutableList(), 
+                SelectedTopic = null, 
+                Sections = ImmutableList<Section>.Empty, 
+                SelectedSection = null, 
+                IsLoading = false,
+                LastAddedId = lastAddedId,
+                LastAddedQuestionText = lastAddedQ,
+                LastAddedAnswerText = lastAddedA
+            });
         }
         catch (Exception ex)
         {
@@ -465,10 +486,11 @@ public class QuestionEditorViewModel : ViewModelBase<QuestionEditorState>, IRout
                 LastAddedId = question.Id,
                 LastAddedQuestionText = question.QuestionText,
                 LastAddedAnswerText = question.AnswerText,
-                // If we are in add mode, let's clear the text inputs to allow entering another question easily!
                 QuestionText = isNew ? string.Empty : State.QuestionText,
                 AnswerText = isNew ? string.Empty : State.AnswerText,
-                CustomSectionName = string.Empty
+                CustomSectionName = string.Empty,
+                QuestionImages = isNew ? ImmutableList<string>.Empty : State.QuestionImages,
+                AnswerImages = isNew ? ImmutableList<string>.Empty : State.AnswerImages
             });
 
             if (isNew)

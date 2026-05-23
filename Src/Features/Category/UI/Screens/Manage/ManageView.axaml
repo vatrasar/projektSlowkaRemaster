@@ -56,9 +56,9 @@
                             </StackPanel>
                             <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
                                 <Button x:Name="EditCategoryButton" Content="Edit" Classes="SecondarySmall" />
-                                <Button x:Name="DeleteCategoryButton" Content="Delete" Classes="DangerSmall" />
                                 <Button x:Name="ArchiveAllButton" Content="Archive All" Classes="SecondarySmall" />
                                 <Button x:Name="ExportLaTeXButton" Content="Export LaTeX" Classes="SecondarySmall" />
+                                <Button x:Name="DeleteCategoryButton" Content="Delete" Classes="DangerSmall" />
                                 <Button x:Name="AddQuestionButton" Content="+ Add Question" Classes="SuccessSmall" />
                             </StackPanel>
                         </Grid>

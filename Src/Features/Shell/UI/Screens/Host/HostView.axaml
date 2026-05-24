@@ -2,6 +2,7 @@
                           x:DataType="local:HostViewModel"
                           xmlns="https://github.com/avaloniaui"
                           xmlns:local="using:ProjektSlowkaRemasterd.Src.Features.Shell.UI.Screens.Host"
+                          xmlns:res="using:ProjektSlowkaRemasterd.Src.Features.Shell.Resources"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                           xmlns:rxui="http://reactiveui.net"
                           xmlns:material="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
@@ -16,42 +17,42 @@
         <Border Grid.Column="0" Classes="Sidebar">
             <Grid RowDefinitions="Auto,*,Auto">
                 <!-- Title / Logo -->
-                <TextBlock Grid.Row="0" Classes="LogoText" Text="Antigravity Flashcards" />
+                <TextBlock Grid.Row="0" Classes="LogoText" Text="{x:Static res:ShellStrings.AppLogoText}" />
 
                 <!-- Navigation List -->
                 <StackPanel Grid.Row="1" Spacing="6">
                     <Button x:Name="HomeButton" Classes="NavButton">
                         <StackPanel Orientation="Horizontal" Spacing="15" VerticalAlignment="Center">
                             <material:MaterialIcon Kind="Home" Width="20" Height="20" Foreground="#ff0073cf"/>
-                            <TextBlock Text="Home" VerticalAlignment="Center"/>
+                            <TextBlock Text="{x:Static res:ShellStrings.NavHome}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
 
                     <Button x:Name="ReviewButton" Classes="NavButton">
                         <StackPanel Orientation="Horizontal" Spacing="15" VerticalAlignment="Center">
                             <material:MaterialIcon Kind="CardMultiple" Width="20" Height="20" Foreground="#ff0073cf"/>
-                            <TextBlock Text="Review for Today" VerticalAlignment="Center"/>
+                            <TextBlock Text="{x:Static res:ShellStrings.NavReview}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
 
                     <Button x:Name="TrainingButton" Classes="NavButton">
                         <StackPanel Orientation="Horizontal" Spacing="15" VerticalAlignment="Center">
                             <material:MaterialIcon Kind="School" Width="20" Height="20" Foreground="#ff0073cf"/>
-                            <TextBlock Text="Training Mode" VerticalAlignment="Center"/>
+                            <TextBlock Text="{x:Static res:ShellStrings.NavTraining}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
 
                     <Button x:Name="ManageButton" Classes="NavButton">
                         <StackPanel Orientation="Horizontal" Spacing="15" VerticalAlignment="Center">
                             <material:MaterialIcon Kind="DatabaseEdit" Width="20" Height="20" Foreground="#ff0073cf"/>
-                            <TextBlock Text="Manage" VerticalAlignment="Center"/>
+                            <TextBlock Text="{x:Static res:ShellStrings.NavManage}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
 
                     <Button x:Name="SearchButton" Classes="NavButton">
                         <StackPanel Orientation="Horizontal" Spacing="15" VerticalAlignment="Center">
                             <material:MaterialIcon Kind="Magnify" Width="20" Height="20" Foreground="#ff0073cf"/>
-                            <TextBlock Text="Search" VerticalAlignment="Center"/>
+                            <TextBlock Text="{x:Static res:ShellStrings.NavSearch}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
                 </StackPanel>
@@ -61,7 +62,7 @@
                     <Button x:Name="SettingsButton" Classes="NavButton">
                         <StackPanel Orientation="Horizontal" Spacing="15" VerticalAlignment="Center">
                             <material:MaterialIcon Kind="Cog" Width="20" Height="20" Foreground="#ff0073cf"/>
-                            <TextBlock Text="Settings" VerticalAlignment="Center"/>
+                            <TextBlock Text="{x:Static res:ShellStrings.NavSettings}" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
                 </StackPanel>

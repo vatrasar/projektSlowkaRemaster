@@ -385,7 +385,7 @@ public class QuestionEditorViewModel : ViewModelBase<QuestionEditorState>, IRout
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(State.AnswerText))
+        if (string.IsNullOrWhiteSpace(State.AnswerText) && !State.AnswerImages.Any())
         {
             UpdateState(s => s with { ErrorMessage = "Answer field cannot be empty." });
             return;

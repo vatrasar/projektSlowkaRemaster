@@ -242,8 +242,8 @@ public partial class TrainingSessionView : ReactiveUserControl<TrainingSessionVi
                     var img = new Image
                     {
                         Source = bitmap,
-                        MaxWidth = 500,
-                        MaxHeight = 350,
+                        MaxWidth = 750,
+                        MaxHeight = 500,
                         Margin = new Thickness(0, 8, 0, 8),
                         HorizontalAlignment = HorizontalAlignment.Center
                     };

@@ -35,6 +35,9 @@ public partial class ReviewSessionView : ReactiveUserControl<ReviewSessionViewMo
             // Bind header texts
             this.OneWayBind(ViewModel, vm => vm.State.CategoryName, v => v.CategoryNameText.Text);
             this.OneWayBind(ViewModel, vm => vm.State.TopicName, v => v.TopicNameText.Text);
+
+            // Bind problematic button command
+            this.BindCommand(ViewModel, vm => vm.ToggleProblematicCommand, v => v.ToggleProblematicButton);
             
             // TopicName visibility
             this.WhenAnyValue(x => x.ViewModel!.State.TopicName)
@@ -64,6 +67,7 @@ public partial class ReviewSessionView : ReactiveUserControl<ReviewSessionViewMo
             ActionsGrid.IsVisible = false;
             ProgressText.Text = "Completed";
             SessionProgressBar.Value = 100;
+            ToggleProblematicButton.IsVisible = false;
             return;
         }
 
@@ -97,6 +101,18 @@ public partial class ReviewSessionView : ReactiveUserControl<ReviewSessionViewMo
         var q = state.CurrentQuestion;
         if (q != null)
         {
+            ToggleProblematicButton.IsVisible = true;
+            if (q.IsProblematic)
+            {
+                ProblematicIcon.Kind = Material.Icons.MaterialIconKind.AlertOctagram;
+                ToggleProblematicButton.Classes.Set("ProblematicActive", true);
+            }
+            else
+            {
+                ProblematicIcon.Kind = Material.Icons.MaterialIconKind.AlertOctagramOutline;
+                ToggleProblematicButton.Classes.Set("ProblematicActive", false);
+            }
+
             // Note mode vs normal mode Q/A visibility
             if (q.IsNotion)
             {
@@ -138,6 +154,10 @@ public partial class ReviewSessionView : ReactiveUserControl<ReviewSessionViewMo
                 ShowAnswerButton.IsVisible = true;
                 EvaluationButtonsGrid.IsVisible = false;
             }
+        }
+        else
+        {
+            ToggleProblematicButton.IsVisible = false;
         }
     }
 

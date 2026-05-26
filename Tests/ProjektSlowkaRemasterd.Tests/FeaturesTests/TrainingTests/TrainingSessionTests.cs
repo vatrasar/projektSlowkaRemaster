@@ -332,5 +332,67 @@ public class TrainingSessionTests
         Assert.Equal("Cześć", vm.State.QuestionText);
         Assert.Equal("A->Q", vm.State.CurrentDirection);
     }
+
+    [Fact]
+    public async Task TrainingSession_ToggleProblematic_FromFalseToTrue_UpdatesQuestionInDatabaseAndState()
+    {
+        // Arrange
+        var category = new Category { Id = 1, Name = "General", Reverse = false };
+        var q = new Question { Id = 10, CategoryId = 1, QuestionText = "Q", AnswerText = "A", IsProblematic = false };
+        var questions = new List<Question> { q };
+        var mockQuestionRepo = new Mock<IQuestionRepository>();
+
+        _mockCategoryRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<Category> { category });
+
+        var vm = new TrainingSessionViewModel(
+            _mockScreen.Object,
+            questions,
+            "Title",
+            "Subtitle",
+            _mockCategoryRepo.Object,
+            _mockMediaRepo.Object,
+            mockQuestionRepo.Object
+        );
+
+        await vm.LoadSessionCommand.Execute().ToTask();
+
+        // Act: Toggle problematic
+        await vm.ToggleProblematicCommand.Execute().ToTask();
+
+        // Assert: flag is true, repository was updated
+        Assert.True(vm.State.CurrentQuestion!.IsProblematic);
+        mockQuestionRepo.Verify(r => r.UpdateAsync(It.Is<Question>(x => x.Id == 10 && x.IsProblematic == true)), Times.Once);
+    }
+
+    [Fact]
+    public async Task TrainingSession_ToggleProblematic_FromTrueToFalse_UpdatesQuestionInDatabaseAndState()
+    {
+        // Arrange
+        var category = new Category { Id = 1, Name = "General", Reverse = false };
+        var q = new Question { Id = 10, CategoryId = 1, QuestionText = "Q", AnswerText = "A", IsProblematic = true };
+        var questions = new List<Question> { q };
+        var mockQuestionRepo = new Mock<IQuestionRepository>();
+
+        _mockCategoryRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<Category> { category });
+
+        var vm = new TrainingSessionViewModel(
+            _mockScreen.Object,
+            questions,
+            "Title",
+            "Subtitle",
+            _mockCategoryRepo.Object,
+            _mockMediaRepo.Object,
+            mockQuestionRepo.Object
+        );
+
+        await vm.LoadSessionCommand.Execute().ToTask();
+
+        // Act: Toggle problematic
+        await vm.ToggleProblematicCommand.Execute().ToTask();
+
+        // Assert: flag is false, repository was updated again
+        Assert.False(vm.State.CurrentQuestion!.IsProblematic);
+        mockQuestionRepo.Verify(r => r.UpdateAsync(It.Is<Question>(x => x.Id == 10 && x.IsProblematic == false)), Times.Once);
+    }
 }
 

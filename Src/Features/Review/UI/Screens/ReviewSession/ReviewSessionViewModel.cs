@@ -54,6 +54,7 @@ public class ReviewSessionViewModel : ViewModelBase<ReviewSessionState>, IRoutab
     public ReactiveCommand<Unit, Unit> KnowCommand { get; }
     public ReactiveCommand<Unit, Unit> UnknownCommand { get; }
     public ReactiveCommand<Unit, Unit> ArchiveCommand { get; }
+    public ReactiveCommand<Unit, Unit> ToggleProblematicCommand { get; }
     public ReactiveCommand<Unit, IRoutableViewModel> BackToSelectionCommand { get; }
 
     public ReviewSessionViewModel(IScreen hostScreen, int categoryId, int? topicId = null)
@@ -94,11 +95,34 @@ public class ReviewSessionViewModel : ViewModelBase<ReviewSessionState>, IRoutab
         KnowCommand = ReactiveCommand.CreateFromTask(OnKnowAsync);
         UnknownCommand = ReactiveCommand.CreateFromTask(OnUnknownAsync);
         ArchiveCommand = ReactiveCommand.CreateFromTask(OnArchiveAsync);
+        ToggleProblematicCommand = ReactiveCommand.CreateFromTask(ToggleProblematicAsync);
 
         BackToSelectionCommand = ReactiveCommand.CreateFromObservable(() =>
             HostScreen.Router.Navigate.Execute(new ReviewSelectionViewModel(HostScreen)));
 
         LoadSessionCommand.Execute().Subscribe();
+    }
+
+    private async Task ToggleProblematicAsync()
+    {
+        var current = State.CurrentQuestion;
+        if (current == null) return;
+
+        UpdateState(s => s with { IsLoading = true });
+        try
+        {
+            current.IsProblematic = !current.IsProblematic;
+            await _questionRepository.UpdateAsync(current);
+            UpdateState(s => s with { CurrentQuestion = current });
+        }
+        catch (Exception ex)
+        {
+            UpdateState(s => s with { ErrorMessage = $"Failed to update question: {ex.Message}" });
+        }
+        finally
+        {
+            UpdateState(s => s with { IsLoading = false });
+        }
     }
 
     private async Task LoadSessionAsync()

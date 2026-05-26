@@ -512,5 +512,87 @@ public class ReviewSessionTests
 
         Assert.True(vm.State.IsFinished);
     }
+
+    [Fact]
+    public async Task ReviewSession_ToggleProblematic_FromFalseToTrue_UpdatesQuestionInDatabaseAndState()
+    {
+        // Arrange
+        var category = new Category { Id = 1, Name = "Languages", Reverse = false };
+        var question = new Question 
+        { 
+            Id = 10, 
+            QuestionText = "Apple", 
+            AnswerText = "Jabłko", 
+            CategoryId = 1, 
+            Status = QuestionStatus.UNCHECKED,
+            Interval = 1,
+            IsProblematic = false
+        };
+
+        _mockCategoryRepo.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(category);
+        _mockQuestionRepo.Setup(r => r.GetReviewQuestionsByCategoryAsync(1, It.IsAny<DateTime>()))
+            .ReturnsAsync(new List<Question> { question });
+
+        var vm = new ReviewSessionViewModel(
+            _mockScreen.Object,
+            1,
+            null,
+            _mockCategoryRepo.Object,
+            _mockTopicRepo.Object,
+            _mockQuestionRepo.Object,
+            _mockStatisticsRepo.Object,
+            _mockMediaRepo.Object
+        );
+
+        await vm.LoadSessionCommand.Execute().ToTask();
+
+        // Act: Toggle problematic
+        await vm.ToggleProblematicCommand.Execute().ToTask();
+
+        // Assert: flag is true, repository was updated
+        Assert.True(vm.State.CurrentQuestion!.IsProblematic);
+        _mockQuestionRepo.Verify(r => r.UpdateAsync(It.Is<Question>(x => x.Id == 10 && x.IsProblematic == true)), Times.Once);
+    }
+
+    [Fact]
+    public async Task ReviewSession_ToggleProblematic_FromTrueToFalse_UpdatesQuestionInDatabaseAndState()
+    {
+        // Arrange
+        var category = new Category { Id = 1, Name = "Languages", Reverse = false };
+        var question = new Question 
+        { 
+            Id = 10, 
+            QuestionText = "Apple", 
+            AnswerText = "Jabłko", 
+            CategoryId = 1, 
+            Status = QuestionStatus.UNCHECKED,
+            Interval = 1,
+            IsProblematic = true
+        };
+
+        _mockCategoryRepo.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(category);
+        _mockQuestionRepo.Setup(r => r.GetReviewQuestionsByCategoryAsync(1, It.IsAny<DateTime>()))
+            .ReturnsAsync(new List<Question> { question });
+
+        var vm = new ReviewSessionViewModel(
+            _mockScreen.Object,
+            1,
+            null,
+            _mockCategoryRepo.Object,
+            _mockTopicRepo.Object,
+            _mockQuestionRepo.Object,
+            _mockStatisticsRepo.Object,
+            _mockMediaRepo.Object
+        );
+
+        await vm.LoadSessionCommand.Execute().ToTask();
+
+        // Act: Toggle problematic
+        await vm.ToggleProblematicCommand.Execute().ToTask();
+
+        // Assert: flag is false, repository was updated again
+        Assert.False(vm.State.CurrentQuestion!.IsProblematic);
+        _mockQuestionRepo.Verify(r => r.UpdateAsync(It.Is<Question>(x => x.Id == 10 && x.IsProblematic == false)), Times.Once);
+    }
 }
 

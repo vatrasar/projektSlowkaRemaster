@@ -43,6 +43,7 @@ public class TrainingSessionViewModel : ViewModelBase<TrainingSessionState>, IRo
 
     private readonly ICategoryRepository _categoryRepository;
     private readonly IMediaRepository _mediaRepository;
+    private readonly IQuestionRepository _questionRepository;
 
     private readonly List<Question> _initialQuestions;
     private readonly List<TrainingQueueItem> _queue = new();
@@ -55,6 +56,7 @@ public class TrainingSessionViewModel : ViewModelBase<TrainingSessionState>, IRo
     public ReactiveCommand<Unit, Unit> ShowAnswerCommand { get; }
     public ReactiveCommand<Unit, Unit> KnowCommand { get; }
     public ReactiveCommand<Unit, Unit> UnknownCommand { get; }
+    public ReactiveCommand<Unit, Unit> ToggleProblematicCommand { get; }
     public ReactiveCommand<Unit, IRoutableViewModel> BackToSelectionCommand { get; }
 
     public TrainingSessionViewModel(IScreen hostScreen, List<Question> questions, string title, string subtitle)
@@ -64,7 +66,8 @@ public class TrainingSessionViewModel : ViewModelBase<TrainingSessionState>, IRo
             title,
             subtitle,
             Locator.Current.GetService<ICategoryRepository>()!,
-            Locator.Current.GetService<IMediaRepository>()!)
+            Locator.Current.GetService<IMediaRepository>()!,
+            Locator.Current.GetService<IQuestionRepository>()!)
     {
     }
 
@@ -74,23 +77,48 @@ public class TrainingSessionViewModel : ViewModelBase<TrainingSessionState>, IRo
         string title,
         string subtitle,
         ICategoryRepository categoryRepository,
-        IMediaRepository mediaRepository)
+        IMediaRepository mediaRepository,
+        IQuestionRepository? questionRepository = null)
         : base(new TrainingSessionState { Title = title, Subtitle = subtitle })
     {
         HostScreen = hostScreen;
         _initialQuestions = questions ?? new List<Question>();
         _categoryRepository = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository));
         _mediaRepository = mediaRepository ?? throw new ArgumentNullException(nameof(mediaRepository));
+        _questionRepository = questionRepository ?? Locator.Current.GetService<IQuestionRepository>()!;
 
         LoadSessionCommand = ReactiveCommand.CreateFromTask(LoadSessionAsync);
         ShowAnswerCommand = ReactiveCommand.Create(ShowAnswer);
         KnowCommand = ReactiveCommand.CreateFromTask(OnKnowAsync);
         UnknownCommand = ReactiveCommand.CreateFromTask(OnUnknownAsync);
+        ToggleProblematicCommand = ReactiveCommand.CreateFromTask(ToggleProblematicAsync);
 
         BackToSelectionCommand = ReactiveCommand.CreateFromObservable(() =>
             HostScreen.Router.Navigate.Execute(new TrainingSelectionViewModel(HostScreen)));
 
         LoadSessionCommand.Execute().Subscribe();
+    }
+
+    private async Task ToggleProblematicAsync()
+    {
+        var current = State.CurrentQuestion;
+        if (current == null) return;
+
+        UpdateState(s => s with { IsLoading = true });
+        try
+        {
+            current.IsProblematic = !current.IsProblematic;
+            await _questionRepository.UpdateAsync(current);
+            UpdateState(s => s with { CurrentQuestion = current });
+        }
+        catch (Exception ex)
+        {
+            UpdateState(s => s with { ErrorMessage = $"Failed to update question: {ex.Message}" });
+        }
+        finally
+        {
+            UpdateState(s => s with { IsLoading = false });
+        }
     }
 
     private async Task LoadSessionAsync()

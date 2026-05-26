@@ -87,4 +87,26 @@
         <Setter Property="Background" Value="#ff333333" />
         <Setter Property="CornerRadius" Value="3" />
     </Style>
+
+    <Style Selector="Button.ProblematicBtn">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="#ff555555" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="8" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Foreground" Value="#ffa8aaad" />
+    </Style>
+    <Style Selector="Button.ProblematicBtn:pointerover">
+        <Setter Property="Background" Value="#ff333333" />
+    </Style>
+    <Style Selector="Button.ProblematicActive">
+        <Setter Property="Background" Value="#ffa80000" />
+        <Setter Property="BorderBrush" Value="#ffa80000" />
+        <Setter Property="Foreground" Value="White" />
+    </Style>
+    <Style Selector="Button.ProblematicActive:pointerover">
+        <Setter Property="Background" Value="#ffd01b1b" />
+        <Setter Property="BorderBrush" Value="#ffd01b1b" />
+        <Setter Property="Foreground" Value="White" />
+    </Style>
 </Styles>

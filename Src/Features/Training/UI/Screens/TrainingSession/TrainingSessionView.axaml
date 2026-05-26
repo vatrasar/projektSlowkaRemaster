@@ -3,6 +3,7 @@
                            xmlns="https://github.com/avaloniaui"
                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                            xmlns:rxui="http://reactiveui.net"
+                           xmlns:material="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
                            xmlns:local="using:ProjektSlowkaRemasterd.Src.Features.Training.UI.Screens.TrainingSession"
                            x:Class="ProjektSlowkaRemasterd.Src.Features.Training.UI.Screens.TrainingSession.TrainingSessionView">
 
@@ -24,7 +25,12 @@
                 <TextBlock x:Name="ProgressText" Classes="Subtitle" Text="Card 1 of 10" Margin="0,8,0,0" />
                 <ProgressBar x:Name="SessionProgressBar" Classes="SessionProgress" Minimum="0" Maximum="100" Value="10" Margin="0,4,0,0" HorizontalAlignment="Stretch" />
             </StackPanel>
-            <Button Grid.Column="1" x:Name="BackButton" Content="Exit Training" Command="{Binding BackToSelectionCommand}" VerticalAlignment="Top" />
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Top">
+                <Button x:Name="ToggleProblematicButton" Classes="ProblematicBtn" VerticalAlignment="Center">
+                    <material:MaterialIcon x:Name="ProblematicIcon" Width="20" Height="20" />
+                </Button>
+                <Button x:Name="BackButton" Content="Exit Training" Command="{Binding BackToSelectionCommand}" VerticalAlignment="Center" />
+            </StackPanel>
         </Grid>
 
         <!-- Main Card Section (Active Card) -->

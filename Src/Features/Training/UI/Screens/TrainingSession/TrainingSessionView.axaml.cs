@@ -35,6 +35,9 @@ public partial class TrainingSessionView : ReactiveUserControl<TrainingSessionVi
             this.OneWayBind(ViewModel, vm => vm.State.Title, v => v.CategoryNameText.Text);
             this.OneWayBind(ViewModel, vm => vm.State.Subtitle, v => v.TopicNameText.Text);
 
+            // Bind problematic button command
+            this.BindCommand(ViewModel, vm => vm.ToggleProblematicCommand, v => v.ToggleProblematicButton);
+
             // Subtitle visibility
             this.WhenAnyValue(x => x.ViewModel!.State.Subtitle)
                 .Select(subtitle => !string.IsNullOrEmpty(subtitle))
@@ -63,6 +66,7 @@ public partial class TrainingSessionView : ReactiveUserControl<TrainingSessionVi
             ActionsGrid.IsVisible = false;
             ProgressText.Text = "Completed";
             SessionProgressBar.Value = 100;
+            ToggleProblematicButton.IsVisible = false;
             return;
         }
 
@@ -96,6 +100,18 @@ public partial class TrainingSessionView : ReactiveUserControl<TrainingSessionVi
         var q = state.CurrentQuestion;
         if (q != null)
         {
+            ToggleProblematicButton.IsVisible = true;
+            if (q.IsProblematic)
+            {
+                ProblematicIcon.Kind = Material.Icons.MaterialIconKind.AlertOctagram;
+                ToggleProblematicButton.Classes.Set("ProblematicActive", true);
+            }
+            else
+            {
+                ProblematicIcon.Kind = Material.Icons.MaterialIconKind.AlertOctagramOutline;
+                ToggleProblematicButton.Classes.Set("ProblematicActive", false);
+            }
+
             // Note mode vs normal mode Q/A visibility
             if (q.IsNotion)
             {
@@ -137,6 +153,10 @@ public partial class TrainingSessionView : ReactiveUserControl<TrainingSessionVi
                 ShowAnswerButton.IsVisible = true;
                 EvaluationButtonsGrid.IsVisible = false;
             }
+        }
+        else
+        {
+            ToggleProblematicButton.IsVisible = false;
         }
     }
 

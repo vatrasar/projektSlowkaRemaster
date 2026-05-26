@@ -15,6 +15,7 @@ using ProjektSlowkaRemasterd.Src.Features.Training.UI.Screens.TrainingSession;
 namespace ProjektSlowkaRemasterd.Src.Features.Training.UI.Screens.TrainingSelection;
 
 using Question = ProjektSlowkaRemasterd.Src.Core.Domain.Models.Question;
+using Category = ProjektSlowkaRemasterd.Src.Core.Domain.Models.Category;
 
 public class TrainingSelectionViewModel : ViewModelBase<TrainingSelectionState>, IRoutableViewModel
 {
@@ -25,10 +26,12 @@ public class TrainingSelectionViewModel : ViewModelBase<TrainingSelectionState>,
     private readonly ITopicRepository _topicRepository;
     private readonly IQuestionRepository _questionRepository;
 
+    private List<Category> _allCategoriesList = new();
+    private List<Question> _allQuestionsList = new();
+
     public ReactiveCommand<Unit, Unit> LoadCommand { get; }
     public ReactiveCommand<int, Unit> ToggleCategoryMarkCommand { get; }
-    public ReactiveCommand<Unit, Unit> TrainTomorrowCommand { get; }
-    public ReactiveCommand<Unit, Unit> TrainProblematicCommand { get; }
+    public ReactiveCommand<Unit, Unit> ToggleProblematicFilterCommand { get; }
     public ReactiveCommand<Unit, Unit> TrainSelectedCategoryCommand { get; }
     public ReactiveCommand<Unit, Unit> TrainSelectedTopicCommand { get; }
     public ReactiveCommand<Unit, Unit> TrainMarkedCategoriesCommand { get; }
@@ -56,6 +59,7 @@ public class TrainingSelectionViewModel : ViewModelBase<TrainingSelectionState>,
 
         LoadCommand = ReactiveCommand.CreateFromTask(LoadAsync);
         ToggleCategoryMarkCommand = ReactiveCommand.Create<int>(ToggleCategoryMark);
+        ToggleProblematicFilterCommand = ReactiveCommand.Create(ToggleProblematicFilter);
 
         var canTrainCategory = StateObservable
             .Select(s => s.SelectedCategory != null && s.SelectedCategory.TotalCount > 0);
@@ -66,8 +70,6 @@ public class TrainingSelectionViewModel : ViewModelBase<TrainingSelectionState>,
         var canTrainMarked = StateObservable
             .Select(s => s.Categories.Any(c => c.IsMarked && c.TotalCount > 0));
 
-        TrainTomorrowCommand = ReactiveCommand.CreateFromTask(_ => StartTrainingTomorrowAsync());
-        TrainProblematicCommand = ReactiveCommand.CreateFromTask(_ => StartTrainingProblematicAsync());
         TrainSelectedCategoryCommand = ReactiveCommand.CreateFromTask(_ => StartTrainingSelectedCategoryAsync(), canTrainCategory);
         TrainSelectedTopicCommand = ReactiveCommand.CreateFromTask(_ => StartTrainingSelectedTopicAsync(), canTrainTopic);
         TrainMarkedCategoriesCommand = ReactiveCommand.CreateFromTask(_ => StartTrainingMarkedCategoriesAsync(), canTrainMarked);
@@ -83,46 +85,41 @@ public class TrainingSelectionViewModel : ViewModelBase<TrainingSelectionState>,
             var categories = await _categoryRepository.GetAllAsync();
             var questions = await _questionRepository.GetAllAsync();
 
-            var questionList = questions.ToList();
+            _allCategoriesList = categories.ToList();
+            _allQuestionsList = questions.ToList();
 
-            // Count problematic
-            int problematic = questionList.Count(q => q.IsProblematic && q.Status != Core.Domain.Enums.QuestionStatus.TO_ARCHIVE);
-
-            // Count tomorrow's reviews
-            DateTime tomorrow = DateTime.Today.AddDays(1);
-            int tomorrowCount = questionList.Count(q => q.NextReview.Date == tomorrow.Date && q.Status != Core.Domain.Enums.QuestionStatus.TO_ARCHIVE);
-
-            // Map CategoryTrainingInfo
-            var markedIds = State.Categories.Where(c => c.IsMarked).Select(c => c.Category.Id).ToHashSet();
-            var categoryInfos = categories.Select(c =>
+            var allCategoryInfos = _allCategoriesList.Select(c =>
             {
-                int count = questionList.Count(q => q.CategoryId == c.Id && q.Status != Core.Domain.Enums.QuestionStatus.TO_ARCHIVE);
-                bool isMarked = markedIds.Contains(c.Id);
-                return new CategoryTrainingInfo(c, count, isMarked);
+                int count = _allQuestionsList.Count(q => q.CategoryId == c.Id && q.Status != Core.Domain.Enums.QuestionStatus.TO_ARCHIVE);
+                return new CategoryTrainingInfo(c, count, false);
             }).ToImmutableList();
 
             UpdateState(s => s with
             {
                 IsLoading = false,
-                Categories = categoryInfos,
-                ProblematicCount = problematic,
-                TomorrowCount = tomorrowCount
+                AllCategories = allCategoryInfos
             });
 
-            // Update selection list
-            if (State.SelectedCategory != null)
-            {
-                var currentSelectedCat = categoryInfos.FirstOrDefault(c => c.Category.Id == State.SelectedCategory.Category.Id);
-                if (currentSelectedCat != null)
-                {
-                    UpdateState(s => s with { SelectedCategory = currentSelectedCat });
-                    await LoadTopicsForCategoryAsync(currentSelectedCat.Category.Id);
-                }
-            }
+            RefreshCategoryInfos();
+
+            await UpdateSelectedCategoryAfterLoadAsync();
         }
         catch (Exception ex)
         {
             UpdateState(s => s with { IsLoading = false, ErrorMessage = $"Failed to load training selection: {ex.Message}" });
+        }
+    }
+
+    private async Task UpdateSelectedCategoryAfterLoadAsync()
+    {
+        if (State.SelectedCategory == null)
+            return;
+
+        var currentSelectedCat = State.AllCategories.FirstOrDefault(c => c.Category.Id == State.SelectedCategory.Category.Id);
+        if (currentSelectedCat != null)
+        {
+            UpdateState(s => s with { SelectedCategory = currentSelectedCat });
+            await LoadTopicsForCategoryAsync(currentSelectedCat.Category.Id);
         }
     }
 
@@ -164,28 +161,54 @@ public class TrainingSelectionViewModel : ViewModelBase<TrainingSelectionState>,
 
     private void ToggleCategoryMark(int categoryId)
     {
-        var updated = State.Categories.Select(c =>
-            c.Category.Id == categoryId ? c with { IsMarked = !c.IsMarked } : c
-        ).ToImmutableList();
+        var nextMarkedIds = State.MarkedCategoryIds.Contains(categoryId)
+            ? State.MarkedCategoryIds.Remove(categoryId)
+            : State.MarkedCategoryIds.Add(categoryId);
 
-        UpdateState(s => s with { Categories = updated });
+        UpdateState(s => s with { MarkedCategoryIds = nextMarkedIds });
+        RefreshCategoryInfos();
     }
 
-    private async Task StartTrainingTomorrowAsync()
+    private void ToggleProblematicFilter()
     {
-        var questions = await _questionRepository.GetAllAsync();
+        UpdateState(s => s with { FilterProblematic = !s.FilterProblematic });
+        RefreshCategoryInfos();
+    }
+
+    private void RefreshCategoryInfos()
+    {
         DateTime tomorrow = DateTime.Today.AddDays(1);
-        var filtered = questions.Where(q => q.NextReview.Date == tomorrow.Date && q.Status != Core.Domain.Enums.QuestionStatus.TO_ARCHIVE).ToList();
 
-        HostScreen.Router.Navigate.Execute(new TrainingSessionViewModel(HostScreen, filtered, "Tomorrow's Reviews", "Global tomorrow training")).Subscribe();
-    }
+        int problematicCount = _allQuestionsList.Count(q =>
+            q.Status != Core.Domain.Enums.QuestionStatus.TO_ARCHIVE &&
+            q.Interval == 1 &&
+            q.NextReview.Date <= tomorrow.Date &&
+            q.IsProblematic);
 
-    private async Task StartTrainingProblematicAsync()
-    {
-        var questions = await _questionRepository.GetAllAsync();
-        var filtered = questions.Where(q => q.IsProblematic && q.Status != Core.Domain.Enums.QuestionStatus.TO_ARCHIVE).ToList();
+        var filteredQuestions = _allQuestionsList.Where(q =>
+            q.Status != Core.Domain.Enums.QuestionStatus.TO_ARCHIVE &&
+            q.Interval == 1 &&
+            q.NextReview.Date <= tomorrow.Date &&
+            (!State.FilterProblematic || q.IsProblematic)
+        ).ToList();
 
-        HostScreen.Router.Navigate.Execute(new TrainingSessionViewModel(HostScreen, filtered, "Problematic Questions", "Focused training on failures")).Subscribe();
+        var markedIds = State.MarkedCategoryIds;
+
+        var categoryInfos = _allCategoriesList
+            .Select(c =>
+            {
+                int count = filteredQuestions.Count(q => q.CategoryId == c.Id);
+                bool isMarked = markedIds.Contains(c.Id);
+                return new CategoryTrainingInfo(c, count, isMarked);
+            })
+            .Where(info => info.TotalCount > 0)
+            .ToImmutableList();
+
+        UpdateState(s => s with
+        {
+            Categories = categoryInfos,
+            ProblematicCount = problematicCount
+        });
     }
 
     private async Task StartTrainingSelectedCategoryAsync()
@@ -216,18 +239,44 @@ public class TrainingSelectionViewModel : ViewModelBase<TrainingSelectionState>,
         if (!markedCategories.Any())
             throw new InvalidOperationException("No categories marked.");
 
-        var allQuestions = new List<Question>();
-        foreach (var cat in markedCategories)
-        {
-            var questions = await _questionRepository.GetByCategoryIdAsync(cat.Category.Id);
-            allQuestions.AddRange(questions.Where(q => q.Status != Core.Domain.Enums.QuestionStatus.TO_ARCHIVE));
-        }
+        var allQuestions = await LoadFilteredQuestionsForCategoriesAsync(markedCategories);
 
-        var title = "Marked Categories";
-        var subtitle = string.Join(", ", markedCategories.Select(c => c.Category.Name));
-        if (subtitle.Length > 60)
-            subtitle = subtitle.Substring(0, 57) + "...";
+        var title = State.FilterProblematic ? "Problematic Tomorrow" : "Tomorrow's Reviews";
+        var subtitle = BuildCategorySubtitle(markedCategories);
 
         HostScreen.Router.Navigate.Execute(new TrainingSessionViewModel(HostScreen, allQuestions, title, subtitle)).Subscribe();
+    }
+
+    private async Task<List<Question>> LoadFilteredQuestionsForCategoriesAsync(List<CategoryTrainingInfo> categories)
+    {
+        var allQuestions = new List<Question>();
+        foreach (var cat in categories)
+        {
+            var questions = await LoadFilteredQuestionsForCategoryAsync(cat.Category.Id);
+            allQuestions.AddRange(questions);
+        }
+        return allQuestions;
+    }
+
+    private async Task<List<Question>> LoadFilteredQuestionsForCategoryAsync(int categoryId)
+    {
+        var questions = await _questionRepository.GetByCategoryIdAsync(categoryId);
+        DateTime tomorrow = DateTime.Today.AddDays(1);
+        return questions.Where(q =>
+            q.Status != Core.Domain.Enums.QuestionStatus.TO_ARCHIVE &&
+            q.Interval == 1 &&
+            q.NextReview.Date <= tomorrow.Date &&
+            (!State.FilterProblematic || q.IsProblematic)
+        ).ToList();
+    }
+
+    private string BuildCategorySubtitle(List<CategoryTrainingInfo> categories)
+    {
+        var subtitle = string.Join(", ", categories.Select(c => c.Category.Name));
+        if (subtitle.Length > 60)
+        {
+            return subtitle.Substring(0, 57) + "...";
+        }
+        return subtitle;
     }
 }

@@ -43,6 +43,16 @@
         <Setter Property="BorderBrush" Value="#ff0073cf" />
     </Style>
 
+    <Style Selector="Button.ActionCard.active">
+        <Setter Property="Background" Value="#ff0f2b48" />
+        <Setter Property="BorderBrush" Value="#ff0073cf" />
+    </Style>
+
+    <Style Selector="Button.ActionCard.active:pointerover">
+        <Setter Property="Background" Value="#ff163a5f" />
+        <Setter Property="BorderBrush" Value="#ff0084eb" />
+    </Style>
+
     <Style Selector="Button.PrimaryActionBtn">
         <Setter Property="Background" Value="#ff0073cf" />
         <Setter Property="Foreground" Value="White" />

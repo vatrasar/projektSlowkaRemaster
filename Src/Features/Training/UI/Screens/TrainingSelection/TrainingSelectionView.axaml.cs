@@ -26,26 +26,21 @@ public partial class TrainingSelectionView : ReactiveUserControl<TrainingSelecti
 
         this.WhenActivated(disposables =>
         {
-            // Bind loading bar
             this.OneWayBind(ViewModel, vm => vm.State.IsLoading, v => v.SelectionLoadingBar.IsVisible);
-
-            // Bind counts
-            this.WhenAnyValue(x => x.ViewModel!.State.TomorrowCount)
-                .Select(count => $"{count} cards")
-                .Subscribe(Observer.Create<string>(text => TomorrowCountText.Text = text))
-                .DisposeWith(disposables);
 
             this.WhenAnyValue(x => x.ViewModel!.State.ProblematicCount)
                 .Select(count => $"{count} cards")
                 .Subscribe(Observer.Create<string>(text => ProblematicCountText.Text = text))
                 .DisposeWith(disposables);
 
-            // Bind Lists
+            this.WhenAnyValue(x => x.ViewModel!.State.FilterProblematic)
+                .Subscribe(Observer.Create<bool>(active => TrainProblematicButton.Classes.Set("active", active)))
+                .DisposeWith(disposables);
+
             this.OneWayBind(ViewModel, vm => vm.State.Categories, v => v.CategoriesListBox.ItemsSource);
-            this.OneWayBind(ViewModel, vm => vm.State.Categories, v => v.CategoryComboBox.ItemsSource);
+            this.OneWayBind(ViewModel, vm => vm.State.AllCategories, v => v.CategoryComboBox.ItemsSource);
             this.OneWayBind(ViewModel, vm => vm.State.Topics, v => v.TopicComboBox.ItemsSource);
 
-            // ComboBox selections (OneWay + Event selection synchronization)
             this.OneWayBind(ViewModel, vm => vm.State.SelectedCategory, v => v.CategoryComboBox.SelectedItem);
             this.OneWayBind(ViewModel, vm => vm.State.SelectedTopic, v => v.TopicComboBox.SelectedItem);
 
@@ -68,9 +63,7 @@ public partial class TrainingSelectionView : ReactiveUserControl<TrainingSelecti
                 }))
                 .DisposeWith(disposables);
 
-            // Bind commands to buttons
-            this.BindCommand(ViewModel, vm => vm.TrainTomorrowCommand, v => v.TrainTomorrowButton);
-            this.BindCommand(ViewModel, vm => vm.TrainProblematicCommand, v => v.TrainProblematicButton);
+            this.BindCommand(ViewModel, vm => vm.ToggleProblematicFilterCommand, v => v.TrainProblematicButton);
             this.BindCommand(ViewModel, vm => vm.TrainMarkedCategoriesCommand, v => v.TrainMarkedButton);
             this.BindCommand(ViewModel, vm => vm.TrainSelectedCategoryCommand, v => v.TrainCategoryButton);
             this.BindCommand(ViewModel, vm => vm.TrainSelectedTopicCommand, v => v.TrainTopicButton);

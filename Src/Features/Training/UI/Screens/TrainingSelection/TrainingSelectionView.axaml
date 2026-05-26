@@ -19,26 +19,13 @@
         </StackPanel>
 
         <!-- Left Column: Global & Multi-Category Options -->
-        <Grid Grid.Row="1" Grid.Column="0" RowDefinitions="Auto,Auto,*" Margin="0,0,12,0">
-            <!-- Train Tomorrow Card -->
-            <Button Grid.Row="0" x:Name="TrainTomorrowButton" Classes="ActionCard">
-                <Grid ColumnDefinitions="*,Auto">
-                    <StackPanel Grid.Column="0" Spacing="4">
-                        <TextBlock Text="Train Tomorrow's Reviews" FontSize="16" FontWeight="SemiBold" Foreground="White" />
-                        <TextBlock Text="Practice review cards scheduled for tomorrow." FontSize="12" Foreground="#ffaaaaaa" />
-                    </StackPanel>
-                    <Border Grid.Column="1" Background="#ff333333" CornerRadius="12" Padding="10,4" VerticalAlignment="Center">
-                        <TextBlock x:Name="TomorrowCountText" Text="0 cards" FontSize="12" FontWeight="Bold" Foreground="#ff0073cf" />
-                    </Border>
-                </Grid>
-            </Button>
-
+        <Grid Grid.Row="1" Grid.Column="0" RowDefinitions="Auto,*" Margin="0,0,12,0">
             <!-- Train Problematic Card -->
-            <Button Grid.Row="1" x:Name="TrainProblematicButton" Classes="ActionCard">
+            <Button Grid.Row="0" x:Name="TrainProblematicButton" Classes="ActionCard">
                 <Grid ColumnDefinitions="*,Auto">
                     <StackPanel Grid.Column="0" Spacing="4">
-                        <TextBlock Text="Train Problematic Cards" FontSize="16" FontWeight="SemiBold" Foreground="White" />
-                        <TextBlock Text="Practice questions with high failure statistics." FontSize="12" Foreground="#ffaaaaaa" />
+                        <TextBlock Text="Filter Problematic Cards" FontSize="16" FontWeight="SemiBold" Foreground="White" />
+                        <TextBlock Text="Show only categories containing tomorrow's problematic cards." FontSize="12" Foreground="#ffaaaaaa" />
                     </StackPanel>
                     <Border Grid.Column="1" Background="#ff333333" CornerRadius="12" Padding="10,4" VerticalAlignment="Center">
                         <TextBlock x:Name="ProblematicCountText" Text="0 cards" FontSize="12" FontWeight="Bold" Foreground="#ff0073cf" />
@@ -47,9 +34,9 @@
             </Button>
 
             <!-- Multi-Category Select Card -->
-            <Border Grid.Row="2" Classes="PanelCard" Margin="0,4,0,0">
+            <Border Grid.Row="1" Classes="PanelCard" Margin="0,4,0,0">
                 <Grid RowDefinitions="Auto,*,Auto">
-                    <TextBlock Grid.Row="0" Text="Train Marked Categories" FontSize="16" FontWeight="SemiBold" Foreground="White" Margin="0,0,0,12" />
+                    <TextBlock Grid.Row="0" Text="Questions for Tomorrow" FontSize="16" FontWeight="SemiBold" Foreground="White" Margin="0,0,0,12" />
                     
                     <ListBox Grid.Row="1" x:Name="CategoriesListBox" Background="Transparent" BorderThickness="0" Margin="0,0,0,16">
                         <ListBox.ItemTemplate>
@@ -69,7 +56,7 @@
                         </ListBox.ItemTemplate>
                     </ListBox>
 
-                    <Button Grid.Row="2" x:Name="TrainMarkedButton" Content="Train Marked Categories" Classes="PrimaryActionBtn" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
+                    <Button Grid.Row="2" x:Name="TrainMarkedButton" Content="Train Questions for Tomorrow" Classes="PrimaryActionBtn" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
                 </Grid>
             </Border>
         </Grid>

@@ -249,6 +249,10 @@ public partial class ManageView : ReactiveUserControl<ManageViewModel>
             }).DisposeWith(disposables);
 
             this.BindCommand(ViewModel,
+                vm => vm.NavigateToBulkImportCommand,
+                v => v.BulkImportButton);
+
+            this.BindCommand(ViewModel,
                 vm => vm.NavigateToAddQuestionCommand,
                 v => v.AddQuestionButton);
 

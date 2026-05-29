@@ -1,0 +1,101 @@
+<rxui:ReactiveUserControl x:TypeArguments="local:BulkImportViewModel"
+                           x:DataType="local:BulkImportViewModel"
+                           xmlns="https://github.com/avaloniaui"
+                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                           xmlns:rxui="http://reactiveui.net"
+                           xmlns:local="using:ProjektSlowkaRemasterd.Src.Features.Question.UI.Screens.BulkImport"
+                           xmlns:models="using:ProjektSlowkaRemasterd.Src.Core.Domain.Models"
+                           xmlns:res="using:ProjektSlowkaRemasterd.Src.Features.Question.Resources"
+                           x:Class="ProjektSlowkaRemasterd.Src.Features.Question.UI.Screens.BulkImport.BulkImportView">
+
+    <UserControl.Styles>
+        <StyleInclude Source="/Src/Features/Question/UI/Screens/BulkImport/ScreenStyles/BulkImportViewStyles.axaml" />
+    </UserControl.Styles>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="20" RowDefinitions="Auto,*">
+            <!-- Title & Back Button -->
+            <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Margin="0,0,0,20">
+                <Button x:Name="BackButton" Grid.Column="0" Content="{x:Static res:QuestionStrings.BackButtonText}" Classes="Secondary" VerticalAlignment="Center" Margin="0,0,15,0" />
+                <TextBlock x:Name="TitleTextBlock" Grid.Column="1" Text="{x:Static res:QuestionStrings.BulkImportTitle}" Classes="Title" VerticalAlignment="Center"/>
+            </Grid>
+
+            <!-- Main Layout Split -->
+            <Grid Grid.Row="1" ColumnDefinitions="2*,1.1*">
+                <!-- Left Card: Input File Content -->
+                <Border Grid.Column="0" Classes="Card" Margin="0,0,20,0" VerticalAlignment="Stretch">
+                    <Grid RowDefinitions="Auto,*,Auto,Auto">
+                        <!-- File Upload Section -->
+                        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,12">
+                            <StackPanel Grid.Column="0" Spacing="4">
+                                <TextBlock Text="{x:Static res:QuestionStrings.FileLabel}" Classes="Label" />
+                                <TextBlock x:Name="FilePathTextBlock" Text="{x:Static res:QuestionStrings.NoFileChosen}" Classes="SubLabel" TextTrimming="CharacterEllipsis"/>
+                            </StackPanel>
+                            <Button x:Name="ChooseFileButton" Grid.Column="1" Content="{x:Static res:QuestionStrings.SelectFileButton}" Classes="SecondarySmall" VerticalAlignment="Bottom"/>
+                        </Grid>
+
+                        <!-- Large Pasting Text Area -->
+                        <Grid Grid.Row="1" RowDefinitions="Auto,*" Margin="0,0,0,10">
+                            <TextBlock Grid.Row="0" Text="{x:Static res:QuestionStrings.PastePrompt}" Classes="Label" Margin="0,0,0,6"/>
+                            <TextBox x:Name="ImportTextBox" Grid.Row="1" Classes="Input" AcceptsReturn="True" TextWrapping="NoWrap" Watermark="---&#x0a;Q1:&#x0a;Question Text&#x0a;A1:&#x0a;Answer Text&#x0a;---" MinHeight="350" VerticalAlignment="Stretch" FontFamily="Consolas,Monaco,Courier New,monospace" FontSize="13"/>
+                        </Grid>
+
+                        <!-- Error / Success Indicators -->
+                        <StackPanel Grid.Row="2" HorizontalAlignment="Center" Margin="0,5,0,5">
+                            <TextBlock x:Name="SuccessTextBlock" Classes="Success" HorizontalAlignment="Center"/>
+                            <TextBlock x:Name="ErrorTextBlock" Classes="Error" HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <!-- Action Button -->
+                        <Button x:Name="ImportButton" Grid.Row="3" Content="{x:Static res:QuestionStrings.ImportButton}" Classes="Primary" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Width="220" Margin="0,5,0,0"/>
+                    </Grid>
+                </Border>
+
+                <!-- Right Card: Default Destination Selection -->
+                <Border Grid.Column="1" Classes="Card" VerticalAlignment="Stretch">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel Spacing="15">
+                            <TextBlock Text="Destination Defaults" Classes="SubTitle" Margin="0,0,0,5" />
+
+                            <!-- Category Selection -->
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="{x:Static res:QuestionStrings.CategoryLabel}" Classes="Label" />
+                                <ComboBox x:Name="CategoryComboBox" HorizontalAlignment="Stretch">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate x:DataType="models:Category">
+                                            <TextBlock Text="{Binding Name}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
+
+                            <!-- Topic Selection -->
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="{x:Static res:QuestionStrings.TopicLabel}" Classes="Label" />
+                                <ComboBox x:Name="TopicComboBox" HorizontalAlignment="Stretch">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate x:DataType="models:Topic">
+                                            <TextBlock Text="{Binding Name}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
+
+                            <!-- Section Selection -->
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="{x:Static res:QuestionStrings.SectionLabel}" Classes="Label" />
+                                <ComboBox x:Name="SectionComboBox" HorizontalAlignment="Stretch">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate x:DataType="models:Section">
+                                            <TextBlock Text="{Binding Name}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Border>
+            </Grid>
+        </Grid>
+    </ScrollViewer>
+</rxui:ReactiveUserControl>

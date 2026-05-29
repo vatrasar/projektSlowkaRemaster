@@ -58,4 +58,37 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="BulkImportTitle" xml:space="preserve">
+    <value>Bulk Import Questions</value>
+  </data>
+  <data name="SelectFileButton" xml:space="preserve">
+    <value>Choose File</value>
+  </data>
+  <data name="ImportButton" xml:space="preserve">
+    <value>Import Questions</value>
+  </data>
+  <data name="SuccessMessage" xml:space="preserve">
+    <value>Successfully imported {0} questions!</value>
+  </data>
+  <data name="NoFileChosen" xml:space="preserve">
+    <value>No file chosen</value>
+  </data>
+  <data name="PastePrompt" xml:space="preserve">
+    <value>Or paste the file contents directly below:</value>
+  </data>
+  <data name="CategoryLabel" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="TopicLabel" xml:space="preserve">
+    <value>Topic (Optional)</value>
+  </data>
+  <data name="SectionLabel" xml:space="preserve">
+    <value>Section (Optional)</value>
+  </data>
+  <data name="FileLabel" xml:space="preserve">
+    <value>Select File</value>
+  </data>
+  <data name="BackButtonText" xml:space="preserve">
+    <value>← Back</value>
+  </data>
 </root>

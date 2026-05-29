@@ -59,6 +59,9 @@ public static class DependencyInjection
         services.AddTransient<IStatisticsRepository, StatisticsRepository>();
         services.AddTransient<IMediaRepository, MediaRepository>();
 
+        // 5. Register Use Cases
+        services.AddTransient<Features.Question.Domain.UseCases.BulkImportQuestionsUseCase>();
+
         return services;
     }
 }

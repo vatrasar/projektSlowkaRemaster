@@ -17,6 +17,7 @@ using ProjektSlowkaRemasterd.Src.Core.Domain.RepositoryContracts;
 using ProjektSlowkaRemasterd.Src.Core.Domain.Enums;
 using ProjektSlowkaRemasterd.Src.Features.LaTeX.Domain;
 using ProjektSlowkaRemasterd.Src.Features.Question.UI.Screens.QuestionEditor;
+using ProjektSlowkaRemasterd.Src.Features.Question.UI.Screens.BulkImport;
 using ProjektSlowkaRemasterd.Src.Features.Category.UI.Screens.AddCategory;
 
 namespace ProjektSlowkaRemasterd.Src.Features.Category.UI.Screens.Manage;
@@ -50,6 +51,7 @@ public class ManageViewModel : ViewModelBase<ManageState>, IRoutableViewModel
 
     public ReactiveCommand<Unit, IRoutableViewModel> NavigateToAddCategoryCommand { get; }
     public ReactiveCommand<Unit, IRoutableViewModel> NavigateToAddQuestionCommand { get; }
+    public ReactiveCommand<Unit, IRoutableViewModel> NavigateToBulkImportCommand { get; }
 
     public ManageViewModel(IScreen hostScreen)
         : this(
@@ -98,6 +100,9 @@ public class ManageViewModel : ViewModelBase<ManageState>, IRoutableViewModel
 
         NavigateToAddQuestionCommand = ReactiveCommand.CreateFromObservable(() => 
             HostScreen.Router.Navigate.Execute(new QuestionEditorViewModel(HostScreen, State.SelectedCategory?.Id)));
+
+        NavigateToBulkImportCommand = ReactiveCommand.CreateFromObservable(() => 
+            HostScreen.Router.Navigate.Execute(new BulkImportViewModel(HostScreen, State.SelectedCategory?.Id)));
 
         // Load data on startup
         LoadDataCommand.Execute().Subscribe();
